@@ -1,0 +1,3330 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BR-HAX // PHEONIX</title>
+<style>
+:root{
+  --bg:#050505;--panel:#101012;--line:rgba(255,255,255,.08);
+  --line2:rgba(255,255,255,.14);--fg:#f2f2f4;--fg2:#9a9aa2;--fg3:#5b5b64;
+  --accent:#7eff9c;--accent-dim:rgba(126,255,156,.14);--accent-line:rgba(126,255,156,.35);
+  --warn:#ffb06a;--copper:#c9772e;--copper2:#7a4a1e;--gold:#c9a557;
+  --sans:'Inter',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --mono:ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+  --gutter:clamp(20px,4vw,64px);
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);
+  -webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{scroll-behavior:smooth}
+button{font-family:inherit;color:inherit;cursor:pointer;background:none;border:0}
+::selection{background:var(--accent);color:#041007}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;
+  justify-content:space-between;gap:16px;padding:14px var(--gutter);
+  background:rgba(5,5,5,.85);border-bottom:1px solid transparent;transition:.3s}
+.nav.scrolled{border-bottom-color:var(--line);background:rgba(5,5,5,.95)}
+.brand{display:flex;align-items:center;gap:10px;background:none;border:0;cursor:pointer;padding:0}
+.brand-mark{width:22px;height:22px;background:conic-gradient(from 30deg,var(--accent),#0a3a1a,var(--accent));
+  clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}
+.brand-text{display:flex;flex-direction:column;line-height:1;text-align:left}
+.brand-main{font-size:13px;font-weight:700;letter-spacing:.14em}
+.brand-sub{font-size:9px;letter-spacing:.28em;color:var(--fg2);margin-top:3px}
+.nav-links{display:flex;gap:4px}
+.nav-link{padding:8px 14px;font-size:11px;letter-spacing:.14em;color:var(--fg2);border-radius:100px;transition:.2s;font-weight:500}
+.nav-link:hover{color:var(--fg)}
+.nav-link.active{color:var(--accent);background:var(--accent-dim)}
+@media(max-width:720px){.brand-sub{display:none}.nav-link{padding:8px 8px;font-size:10px;letter-spacing:.1em}}
+
+.btn{display:inline-flex;align-items:center;gap:10px;padding:14px 24px;font-size:12px;
+  letter-spacing:.12em;border-radius:100px;cursor:pointer;border:1px solid transparent;
+  transition:.2s;background:none;position:relative;font-weight:600}
+.btn:hover{transform:translateY(-1px)}
+.btn-primary{background:var(--accent);color:#041007;font-weight:700}
+.btn-primary:hover{box-shadow:0 0 0 6px var(--accent-dim)}
+.btn-ghost{border-color:var(--line2);color:var(--fg)}
+.btn-ghost:hover{border-color:var(--accent-line);color:var(--accent)}
+.chip{background:transparent;border:1px solid var(--line);color:var(--fg2);padding:8px 14px;
+  border-radius:100px;font-size:10px;letter-spacing:.12em;transition:.2s;font-family:var(--sans);font-weight:500}
+.chip:hover{color:var(--fg);border-color:var(--line2)}
+.chip.on,.chip.active{color:#041007;background:var(--accent);border-color:var(--accent);font-weight:700}
+.chip.copper-top.on{background:var(--copper);border-color:var(--copper);color:#160800}
+.chip.copper-bot.on{background:var(--copper2);border-color:var(--copper2);color:#160800}
+
+.hero{position:relative;min-height:100vh;padding:140px var(--gutter) 80px;overflow:hidden;
+  background:radial-gradient(ellipse at 20% 10%,rgba(126,255,156,.07),transparent 55%),
+  radial-gradient(ellipse at 80% 90%,rgba(126,255,156,.04),transparent 55%),
+  linear-gradient(180deg,#050505,#08080a 55%,#050505);
+  display:flex;flex-direction:column;justify-content:center}
+.hero::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 50%,transparent 40%,rgba(5,5,5,.55))}
+.hero-content{position:relative;z-index:1;max-width:1440px;margin:0 auto;width:100%;
+  display:flex;flex-direction:column;gap:22px}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;align-self:flex-start;
+  font-size:11px;letter-spacing:.2em;color:var(--fg2);font-weight:500;
+  border:1px solid var(--line);border-radius:100px;padding:6px 14px 6px 10px;
+  background:rgba(10,10,12,.55)}
+.eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+h1.hero-title{margin:8px 0 0;display:flex;flex-direction:column;line-height:.9}
+.hero-title-main{font-size:clamp(58px,11vw,168px);font-weight:800;letter-spacing:-.04em;
+  background:linear-gradient(180deg,#fff 0%,#b8b8c0 60%,#6a6a74 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-title-sub{font-size:clamp(11px,1.2vw,14px);letter-spacing:.42em;font-weight:500;
+  color:var(--accent);margin-top:16px;opacity:.85}
+.hero-tag{font-size:clamp(11px,1.1vw,14px);letter-spacing:.28em;font-weight:500;
+  color:var(--fg2);margin:4px 0 0}
+.hero-price{display:inline-flex;align-items:baseline;gap:8px;margin:16px 0 8px}
+.hero-price .cur{font-size:22px;color:var(--fg2)}
+.hero-price .val{font-size:clamp(38px,5vw,56px);font-weight:700;letter-spacing:-.02em}
+.hero-price .note{font-size:11px;letter-spacing:.2em;color:var(--fg3);margin-left:12px;font-weight:500}
+.hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px}
+.hero-meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;
+  margin-top:40px;padding-top:32px;max-width:720px;border-top:1px solid var(--line)}
+.hero-meta>div{display:flex;flex-direction:column;gap:6px}
+.hero-meta span{font-size:10px;letter-spacing:.2em;color:var(--fg3);font-weight:500}
+.hero-meta b{font-size:13px;letter-spacing:.03em;font-weight:600}
+.warn{color:var(--warn)}
+@media(max-width:720px){.hero{padding-top:120px}.hero-meta{grid-template-columns:1fr;gap:14px;padding-top:20px}}
+
+.section{padding:clamp(80px,10vw,160px) var(--gutter);max-width:1440px;margin:0 auto;position:relative}
+.section-head{max-width:780px;margin-bottom:56px}
+.section-eyebrow{font-size:11px;letter-spacing:.24em;color:var(--accent);margin-bottom:20px;font-weight:600}
+.section-title{font-size:clamp(40px,6vw,88px);font-weight:800;letter-spacing:-.03em;margin:0 0 20px;line-height:.95}
+.section-lede{font-size:clamp(15px,1.4vw,17px);line-height:1.65;color:var(--fg2);max-width:640px}
+.section-lede b{color:var(--fg);font-weight:600}
+
+.pcb-toolbar{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;
+  padding:12px 14px;border:1px solid var(--line);border-radius:16px;background:rgba(16,16,18,.6)}
+.pcb-toolbar .row{display:flex;gap:8px;flex-wrap:wrap}
+
+.stage{position:relative;height:clamp(420px,62vh,720px);border:1px solid var(--line);
+  border-radius:20px;overflow:hidden;margin-top:16px;touch-action:none;
+  background:radial-gradient(ellipse at 50% 30%,rgba(126,255,156,.06),transparent 60%),
+  linear-gradient(180deg,#070708,#050505 70%);transition:border-color .6s}
+.stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+.stage.revealed{border-color:var(--accent-line)}
+.hud{position:absolute;font-size:10px;letter-spacing:.1em;
+  color:var(--fg2);pointer-events:none;font-weight:500;z-index:2}
+.hud.tl{top:16px;left:18px}.hud.tr{top:16px;right:18px;text-align:right}
+.hud.bl{bottom:16px;left:18px;max-width:62%}.hud.br{bottom:16px;right:18px;pointer-events:auto}
+.hud .label{font-size:9px;letter-spacing:.22em;color:var(--fg3);margin-bottom:4px;font-weight:600}
+.hud .val{color:var(--fg);font-size:11px}
+.hud-legend{display:flex;align-items:center;gap:12px;margin-bottom:8px;flex-wrap:wrap}
+.sw{display:inline-block;width:10px;height:4px;border-radius:2px;margin-right:4px}
+.sw.top{background:var(--copper)}.sw.bot{background:var(--copper2)}.sw.pad{background:var(--gold)}
+.hud .note{font-size:10px;line-height:1.55;color:var(--fg3);max-width:440px}
+.pcb-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
+.pcb-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:24px}
+.stat{border:1px solid var(--line);border-radius:14px;padding:18px 20px;background:var(--panel)}
+.stat .num{font-size:26px;font-weight:700;letter-spacing:-.02em}
+.stat .lbl{font-size:10px;letter-spacing:.18em;color:var(--fg3);margin-top:6px;font-weight:500}
+@media(max-width:720px){.pcb-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.design{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(280px,1fr);gap:24px;align-items:start}
+@media(max-width:900px){.design{grid-template-columns:1fr}}
+.design-stage{position:relative;height:clamp(500px,78vh,860px);border:1px solid var(--line);
+  border-radius:20px;overflow:hidden;touch-action:none;
+  background:radial-gradient(ellipse at 50% 20%,rgba(126,255,156,.07),transparent 60%),#060607;
+  transition:background .5s}
+.design-stage.split{background:
+  radial-gradient(ellipse at 50% 20%,rgba(126,255,156,.09),transparent 60%),
+  linear-gradient(180deg,#0a0d0a,#060607)}
+.design-stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+.design-stage .hud{top:18px;left:20px}
+
+.layer-legend{position:absolute;top:18px;right:20px;z-index:3;
+  display:flex;flex-direction:column;gap:2px;padding:10px;max-height:calc(100% - 100px);
+  overflow-y:auto;scrollbar-width:thin;
+  border:1px solid var(--line);border-radius:14px;background:rgba(5,5,5,.82);
+  opacity:0;transform:translateX(10px);transition:opacity .4s .15s,transform .4s .15s;
+  pointer-events:none;font-size:10px;letter-spacing:.06em;backdrop-filter:blur(6px)}
+.layer-legend.show{opacity:1;transform:none;pointer-events:auto}
+.layer-legend .lg-title{font-size:8px;letter-spacing:.22em;color:var(--fg3);
+  font-weight:700;padding:2px 8px 8px}
+.layer-legend .item{display:flex;align-items:center;gap:8px;color:var(--fg2);
+  padding:5px 8px;border-radius:8px;cursor:pointer;transition:.16s;user-select:none}
+.layer-legend .item:hover{background:rgba(126,255,156,.09);color:var(--fg)}
+.layer-legend .item.solo{background:var(--accent-dim);color:var(--accent)}
+.layer-legend .item.solo b{color:var(--accent)}
+.layer-legend .item .dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.layer-legend .item b{color:var(--fg);font-weight:600;font-size:10.5px;white-space:nowrap}
+.layer-legend .hint{font-size:8px;letter-spacing:.14em;color:var(--fg3);
+  padding:8px 8px 2px;border-top:1px solid var(--line);margin-top:6px;line-height:1.5}
+
+.panel{display:flex;flex-direction:column;gap:20px;padding:22px;border:1px solid var(--line);
+  border-radius:20px;background:var(--panel)}
+.pb{display:flex;flex-direction:column;gap:12px}
+.pb .lbl{font-size:10px;letter-spacing:.22em;color:var(--fg3);font-weight:600}
+.finish-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.finish{display:flex;align-items:center;gap:10px;padding:10px 12px;background:transparent;
+  border:1px solid var(--line);border-radius:12px;text-align:left;transition:.2s}
+.finish:hover{border-color:var(--line2)}
+.finish.active{border-color:var(--accent-line);background:var(--accent-dim)}
+.finish .sw2{width:22px;height:22px;border-radius:50%;border:1px solid rgba(255,255,255,.15);flex-shrink:0}
+.finish .fl{font-size:11px;letter-spacing:.03em;font-weight:500}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{flex:1;padding:10px 8px;font-size:10px;letter-spacing:.1em;background:transparent;
+  border-right:1px solid var(--line);color:var(--fg2);transition:.2s;font-weight:500}
+.seg button:last-child{border-right:0}
+.seg button.active{background:var(--accent);color:#041007;font-weight:700}
+
+.split-btn{position:relative;width:100%;padding:16px 20px;border:1px solid var(--accent-line);
+  border-radius:14px;background:var(--accent-dim);color:var(--accent);
+  font-family:inherit;font-size:12px;letter-spacing:.2em;font-weight:700;
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  transition:.25s;cursor:pointer}
+.split-btn:hover{background:rgba(126,255,156,.22)}
+.split-btn.on{background:var(--accent);color:#041007;border-color:var(--accent)}
+.split-btn .icon{width:18px;height:18px;flex-shrink:0}
+.split-btn .icon line{stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;fill:none}
+
+.price-banner{border:1px solid var(--line);border-radius:20px;overflow:hidden;
+  background:radial-gradient(ellipse at 10% 0%,rgba(126,255,156,.08),transparent 55%),
+  linear-gradient(180deg,#0c0c0e,#070708);margin-bottom:48px}
+.price-banner .inner{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr);
+  gap:32px;padding:36px 40px;align-items:center}
+@media(max-width:900px){.price-banner .inner{grid-template-columns:1fr;padding:28px}}
+.price-banner .lbl{font-size:11px;letter-spacing:.22em;color:var(--fg3);margin-bottom:8px;font-weight:600}
+.price-banner .val{font-size:clamp(42px,6vw,76px);font-weight:800;letter-spacing:-.03em;line-height:1}
+.price-banner .cur{color:var(--accent)}
+.price-banner .meta div{font-size:10px;letter-spacing:.2em;color:var(--fg3);margin-bottom:8px;font-weight:600}
+.price-banner .meta p{margin:0;font-size:14px;color:var(--fg2);line-height:1.55}
+
+.ticker{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:100px;
+  padding:13px 0;margin-bottom:40px;background:rgba(10,10,12,.6);
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent)}
+.ticker-track{display:flex;gap:44px;width:max-content;animation:tick 34s linear infinite}
+.ticker:hover .ticker-track{animation-play-state:paused}
+.ticker span{font-size:10.5px;letter-spacing:.22em;color:var(--fg3);white-space:nowrap;font-weight:600}
+.ticker span b{color:var(--accent);font-weight:700}
+.ticker .sep{color:var(--accent);opacity:.5}
+@keyframes tick{to{transform:translateX(-50%)}}
+
+.highlights{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:44px}
+@media(max-width:900px){.highlights{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.highlights{grid-template-columns:1fr}}
+.hl-card{position:relative;border:1px solid var(--line);border-radius:18px;padding:26px 22px 22px;
+  background:linear-gradient(180deg,rgba(126,255,156,.055),transparent 65%),var(--panel);
+  overflow:hidden;transition:.3s}
+.hl-card:hover{border-color:var(--accent-line);transform:translateY(-3px)}
+.hl-card::after{content:"";position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--accent-line),transparent);opacity:.6}
+.hl-card .n{font-size:clamp(32px,4vw,46px);font-weight:800;letter-spacing:-.035em;
+  line-height:1;display:flex;align-items:baseline;gap:3px}
+.hl-card .n i{font-style:normal;font-size:.46em;font-weight:700;color:var(--accent);letter-spacing:0}
+.hl-card .t{font-size:9.5px;letter-spacing:.2em;color:var(--fg3);margin-top:12px;font-weight:700}
+.hl-card .d{font-size:12px;color:var(--fg2);margin-top:8px;line-height:1.5}
+
+.spot{border:1px solid var(--line);border-radius:20px;overflow:hidden;margin-bottom:48px;
+  background:radial-gradient(ellipse at 12% 0%,rgba(126,255,156,.09),transparent 55%),
+  linear-gradient(180deg,#0c0c0e,#070708)}
+.spot-stack{display:grid;padding:34px 38px 26px;min-height:190px}
+@media(max-width:720px){.spot-stack{padding:26px 22px 20px;min-height:220px}}
+.spot-item{grid-area:1/1;opacity:0;transform:translateY(14px);
+  transition:opacity .55s ease,transform .55s ease;pointer-events:none;
+  display:flex;flex-direction:column;gap:12px;justify-content:center}
+.spot-item.on{opacity:1;transform:none;pointer-events:auto}
+.spot-tag{font-size:9.5px;letter-spacing:.24em;color:var(--accent);font-weight:700}
+.spot-item h3{margin:0;font-size:clamp(22px,3vw,34px);font-weight:800;letter-spacing:-.02em;line-height:1.05}
+.spot-item p{margin:0;font-size:14px;line-height:1.65;color:var(--fg2);max-width:660px}
+.spot-item p b{color:var(--fg);font-weight:600}
+.spot-foot{display:flex;align-items:center;justify-content:space-between;gap:18px;
+  padding:0 38px 26px;flex-wrap:wrap}
+@media(max-width:720px){.spot-foot{padding:0 22px 22px}}
+.spot-dots{display:flex;gap:7px}
+.spot-dots button{width:22px;height:3px;border-radius:2px;background:var(--line2);transition:.25s;padding:0}
+.spot-dots button.on{background:var(--accent);width:38px}
+.spot-meter{flex:1;min-width:120px;height:2px;background:var(--line);border-radius:2px;overflow:hidden}
+.spot-meter i{display:block;height:100%;width:0;background:var(--accent);
+  animation:meter 5s linear infinite;transform-origin:left}
+@keyframes meter{from{width:0}to{width:100%}}
+
+.spec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:900px){.spec-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.spec-grid{grid-template-columns:1fr}}
+.spec-card{border:1px solid var(--line);border-radius:16px;padding:24px;background:var(--panel);
+  opacity:0;transform:translateY(20px);transition:opacity .7s,transform .7s,border-color .3s}
+.spec-card:hover{border-color:var(--accent-line)}
+.spec-card.in{opacity:1;transform:none}
+.spec-card .lbl{font-size:11px;letter-spacing:.22em;color:var(--accent);margin-bottom:18px;font-weight:700}
+.spec-card ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.spec-card li{display:flex;align-items:baseline;justify-content:space-between;gap:14px;
+  border-bottom:1px dashed var(--line);padding-bottom:10px;font-size:13px}
+.spec-card li:last-child{border-bottom:0;padding-bottom:0}
+.spec-card .k{color:var(--fg3);font-size:12px}
+.spec-card .v{color:var(--fg);text-align:right;font-weight:500}
+.spec-card .n{display:block;font-style:normal;font-size:10px;color:var(--fg3);margin-top:3px}
+
+.soft{margin-top:56px}
+.soft .hdr{display:flex;align-items:center;gap:16px;font-size:11px;
+  letter-spacing:.22em;color:var(--fg2);margin-bottom:20px;font-weight:600;flex-wrap:wrap}
+.soft .rule{width:40px;height:1px;background:var(--accent-line)}
+.soft .hdr em{color:var(--fg3);font-style:normal;font-size:10px;font-weight:500}
+.soft-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+@media(max-width:1100px){.soft-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:720px){.soft-grid{grid-template-columns:repeat(2,1fr)}}
+.soft-card{border:1px solid var(--line);border-radius:14px;padding:20px;background:var(--panel);transition:.25s}
+.soft-card:hover{border-color:var(--accent-line);transform:translateY(-2px)}
+.soft-card .tag{font-size:9px;letter-spacing:.22em;color:var(--accent);margin-bottom:10px;font-weight:700}
+.soft-card h4{margin:0 0 8px;font-size:13px;font-weight:700}
+.soft-card p{margin:0;font-size:12px;line-height:1.55;color:var(--fg2)}
+
+/* ============ NEW: WHY PHEONIX SECTION ============ */
+.why{margin-top:64px;position:relative}
+.why-head{max-width:760px;margin-bottom:36px}
+.why-eyebrow{font-size:11px;letter-spacing:.24em;color:var(--accent);
+  font-weight:700;margin-bottom:16px}
+.why-title{font-size:clamp(30px,4vw,52px);font-weight:800;letter-spacing:-.025em;
+  line-height:1.05;margin:0 0 18px}
+.why-lede{font-size:clamp(15px,1.3vw,17px);line-height:1.75;color:var(--fg2);margin:0}
+.why-lede b{color:var(--fg);font-weight:600}
+
+.why-body{border:1px solid var(--line);border-radius:20px;padding:clamp(24px,3vw,44px);
+  background:
+    radial-gradient(ellipse at 12% 0%,rgba(126,255,156,.06),transparent 55%),
+    linear-gradient(180deg,#0b0b0e,#07070a)}
+.why-body p{font-size:clamp(14.5px,1.25vw,16.5px);line-height:1.85;color:var(--fg2);
+  margin:0 0 20px;max-width:820px}
+.why-body p:last-child{margin-bottom:0}
+.why-body p b{color:var(--fg);font-weight:600}
+.why-body p em{color:var(--accent);font-style:normal;font-weight:600}
+.why-body p .hi{color:var(--accent);font-weight:700}
+
+.why-points{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:32px 0 8px}
+@media(max-width:720px){.why-points{grid-template-columns:1fr}}
+.why-point{display:flex;gap:14px;padding:18px 20px;
+  border:1px solid var(--line);border-radius:14px;background:rgba(10,10,12,.55);
+  transition:.25s}
+.why-point:hover{border-color:var(--accent-line);transform:translateY(-2px)}
+.why-point .icon{width:34px;height:34px;flex-shrink:0;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--accent-dim);border:1px solid var(--accent-line);
+  color:var(--accent);font-weight:800;font-size:15px;
+  font-family:var(--mono)}
+.why-point .txt h4{margin:0 0 4px;font-size:13.5px;font-weight:700;letter-spacing:.01em}
+.why-point .txt p{margin:0;font-size:12.5px;line-height:1.6;color:var(--fg2)}
+
+.why-closer{margin-top:32px;padding-top:28px;border-top:1px solid var(--line);
+  font-size:14px;line-height:1.8;color:var(--fg2);max-width:840px}
+.why-closer b{color:var(--accent);font-weight:700}
+.why-closer em{font-style:normal;color:var(--fg);font-weight:600}
+/* ============ END WHY SECTION ============ */
+
+footer{border-top:1px solid var(--line);padding:40px var(--gutter) 60px;background:#030304}
+footer .inner{max-width:1440px;margin:0 auto;display:flex;flex-wrap:wrap;gap:20px;
+  align-items:center;justify-content:space-between;font-size:11px;
+  letter-spacing:.14em;color:var(--fg3);font-weight:500}
+footer .b{display:flex;align-items:center;gap:10px;color:var(--fg)}
+footer .m{width:16px;height:16px;background:var(--accent);
+  clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}
+footer .t{color:var(--accent)}
+
+.qbadge{position:fixed;bottom:14px;right:14px;z-index:200;font-family:var(--mono);
+  font-size:9px;letter-spacing:.14em;color:var(--fg3);background:rgba(5,5,5,.85);
+  border:1px solid var(--line);border-radius:100px;padding:6px 12px;
+  pointer-events:auto;display:flex;gap:8px;align-items:center}
+.qbadge b{color:var(--accent);font-weight:600}
+.qbadge button{font-family:inherit;font-size:9px;letter-spacing:.14em;
+  color:var(--fg3);padding:0;text-decoration:underline;text-underline-offset:3px}
+.qbadge button:hover{color:var(--accent)}
+</style>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.165.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.165.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <button class="brand" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <span class="brand-mark"></span>
+    <span class="brand-text">
+      <span class="brand-main">BR-HAX</span>
+      <span class="brand-sub">// PHEONIX</span>
+    </span>
+  </button>
+  <div class="nav-links">
+    <button class="nav-link" data-goto="pcb">PCB</button>
+    <button class="nav-link" data-goto="design">3D DESIGN</button>
+    <button class="nav-link" data-goto="specs">SPECIFICATIONS</button>
+  </div>
+</nav>
+
+<section class="hero" id="hero">
+  <div class="hero-content">
+    <div class="eyebrow"><span class="eyebrow-dot"></span>CONCEPT FLAGSHIP · INDIA</div>
+    <h1 class="hero-title">
+      <span class="hero-title-main">PHEONIX</span>
+      <span class="hero-title-sub">OBSIDIAN MONOLITH</span>
+    </h1>
+    <p class="hero-tag">ENGINEERED BEYOND THE EXPECTED.</p>
+    <div class="hero-price">
+      <span class="cur">₹</span><span class="val">29,999</span>
+      <span class="note">CONCEPT TARGET</span>
+    </div>
+    <div class="hero-actions">
+      <button class="btn btn-primary" data-goto="design">EXPLORE THE DEVICE</button>
+      <button class="btn btn-ghost" data-goto="pcb">INSPECT THE ARCHITECTURE</button>
+    </div>
+    <div class="hero-meta">
+      <div><span>DESIGN LANGUAGE</span><b>OBSIDIAN MONOLITH</b></div>
+      <div><span>POSITIONING</span><b>PREMIUM PERFORMANCE</b></div>
+      <div><span>STATUS</span><b class="warn">CONCEPT · NOT CERTIFIED</b></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="pcb">
+  <div class="section-head">
+    <div class="section-eyebrow">01 — SIGNAL ARCHITECTURE</div>
+    <h2 class="section-title">PCB</h2>
+    <p class="section-lede">Interactive 3D reconstruction of the <b>PHEONIX Rev C</b> EasyEDA board. Now with silkscreen, via arrays, test points, crystal oscillators and dense SMD passives.</p>
+  </div>
+
+  <div class="pcb-toolbar">
+    <div class="row">
+      <button class="chip active" data-mode="component">COMPONENT MODE</button>
+      <button class="chip" data-mode="copper">COPPER MODE</button>
+      <button class="chip" data-mode="architecture">ARCHITECTURE MODE</button>
+    </div>
+    <div class="row">
+      <button class="chip on" id="tg-components">COMPONENTS</button>
+      <button class="chip copper-top on" id="tg-top">TOP COPPER</button>
+      <button class="chip copper-bot" id="tg-bottom">BOTTOM COPPER</button>
+    </div>
+  </div>
+
+  <div class="stage" id="pcb-stage">
+    <canvas id="pcb-canvas"></canvas>
+    <div class="hud tl"><div class="label">BOARD</div><div class="val" id="hud-board">—</div></div>
+    <div class="hud tr"><div class="label">SOURCE</div><div class="val">EasyEDA Standard · Rev C</div></div>
+    <div class="hud bl">
+      <div class="hud-legend">
+        <span><span class="sw top"></span>TOP CU</span>
+        <span><span class="sw bot"></span>BOTTOM CU</span>
+        <span><span class="sw pad"></span>PADS</span>
+      </div>
+      <div class="note">Copper + pads + vias + testpoints + silkscreen parsed from source.</div>
+    </div>
+    <div class="hud br"><button class="chip" id="btn-fs">FULLSCREEN</button></div>
+  </div>
+
+  <div class="pcb-actions">
+    <button class="btn btn-primary" id="btn-reveal">REVEAL THE CIRCUIT</button>
+    <button class="btn btn-ghost" id="btn-reset">RESET VIEW</button>
+  </div>
+
+  <div class="pcb-stats" id="pcb-stats" style="display:none">
+    <div class="stat"><div class="num" id="s-comp">0</div><div class="lbl">PLACED COMPONENTS</div></div>
+    <div class="stat"><div class="num" id="s-tracks">0</div><div class="lbl">ROUTED COPPER SEGMENTS</div></div>
+    <div class="stat"><div class="num" id="s-nets">0</div><div class="lbl">NAMED NETS</div></div>
+    <div class="stat"><div class="num" id="s-layers">0</div><div class="lbl">LAYERS PRESENT</div></div>
+  </div>
+</section>
+
+<section class="section" id="design">
+  <div class="section-head">
+    <div class="section-eyebrow">02 — INDUSTRIAL DESIGN</div>
+    <h2 class="section-title">3D DESIGN</h2>
+    <p class="section-lede">The PHEONIX <b>OBSIDIAN MONOLITH</b>. Drag to rotate, scroll to zoom. Split View explodes the stack — hover any layer to isolate it.</p>
+  </div>
+
+  <div class="design">
+    <div class="design-stage" id="design-stage">
+      <canvas id="design-canvas"></canvas>
+      <div class="hud">
+        <div class="label">MODEL</div>
+        <div class="val">PHEONIX · OBSIDIAN MONOLITH</div>
+      </div>
+      <div class="layer-legend" id="layer-legend"></div>
+    </div>
+
+    <aside class="panel">
+      <div class="pb">
+        <button class="split-btn" id="btn-split">
+          <svg class="icon" viewBox="0 0 20 20">
+            <line x1="3" y1="4" x2="17" y2="4"/>
+            <line x1="3" y1="10" x2="17" y2="10"/>
+            <line x1="3" y1="16" x2="17" y2="16"/>
+            <line x1="6" y1="1.5" x2="6" y2="18.5"/>
+          </svg>
+          <span id="split-label">SPLIT VIEW · INTERNALS</span>
+        </button>
+      </div>
+      <div class="pb">
+        <div class="lbl">FINISH</div>
+        <div class="finish-grid" id="finishes"></div>
+      </div>
+      <div class="pb">
+        <div class="lbl">VIEW</div>
+        <div class="seg" id="views">
+          <button class="active" data-view="three-quarter">3/4</button>
+          <button data-view="front">FRONT</button>
+          <button data-view="back">BACK</button>
+          <button data-view="side">SIDE</button>
+        </div>
+      </div>
+      <div class="pb">
+        <div class="lbl">LIGHTING</div>
+        <div class="seg" id="lighting">
+          <button class="active" data-light="studio">STUDIO</button>
+          <button data-light="dramatic">DRAMATIC</button>
+          <button data-light="daylight">DAYLIGHT</button>
+          <button data-light="lowlight">LOWLIGHT</button>
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<section class="section" id="specs">
+  <div class="section-head">
+    <div class="section-eyebrow">03 — PROPOSED TARGETS</div>
+    <h2 class="section-title">SPECIFICATIONS</h2>
+    <p class="section-lede">Target specifications engineered around what the <b>Indian youth</b> actually use: gaming, content, UPI, AC remote, FM, campus life.</p>
+  </div>
+
+  <div class="ticker">
+    <div class="ticker-track" id="ticker-track"></div>
+  </div>
+
+  <div class="price-banner">
+    <div class="inner">
+      <div>
+        <div class="lbl">CONCEPT PRICE · INDIA</div>
+        <div class="val"><span class="cur">₹</span>29,999</div>
+      </div>
+      <div class="meta">
+        <div>TARGET AUDIENCE</div>
+        <p>Students · young professionals · creators · gamers</p>
+      </div>
+      <div class="meta">
+        <div>DESIGN LANGUAGE</div>
+        <p>OBSIDIAN MONOLITH — architectural chassis, chamfered rails, matte obsidian</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="highlights" id="highlights"></div>
+
+  <div class="spot">
+    <div class="spot-stack" id="spot-stack"></div>
+    <div class="spot-foot">
+      <div class="spot-dots" id="spot-dots"></div>
+      <div class="spot-meter"><i id="spot-meter"></i></div>
+    </div>
+  </div>
+
+  <div class="spec-grid" id="spec-grid"></div>
+
+  <div class="soft">
+    <div class="hdr"><span class="rule"></span>SOFTWARE CONCEPTS<em>not implemented</em></div>
+    <div class="soft-grid" id="soft-grid"></div>
+  </div>
+
+  <!-- ============ NEW: WHY PHEONIX ============ -->
+  <div class="why">
+    <div class="why-head">
+      <div class="why-eyebrow">04 — MADE FOR YOU</div>
+      <h3 class="why-title">Why PHEONIX feels different</h3>
+      <p class="why-lede">We didn't build this phone for spec sheets. We built it for <b>real life</b> — the way you actually use your phone every day.</p>
+    </div>
+
+    <div class="why-body">
+      <p>Think about your day. You wake up and check messages. You commute with music or a podcast. You pay for chai with your phone. You take a photo of the sunset. You game with friends. You watch a show before bed. <b>PHEONIX was designed around every one of those moments</b> — not around a benchmark chart.</p>
+
+      <p>It has a small <b>IR blaster</b> on top, which means it doubles as a universal remote. Point it at any TV, air conditioner, or set-top box and it just works. No app subscriptions. No learning curve. <em>Your phone is now your remote.</em></p>
+
+      <p>It has a real <b>FM radio</b>, so you can listen to music, cricket commentary, or your favourite RJ without burning data — or even a SIM card. It also has <b>NavIC</b>, India's own GPS, so maps and navigation work reliably in every corner of the country.</p>
+
+      <p>The voice assistant understands and speaks <b>eleven Indian languages</b>, and it runs fully offline. Hindi, Tamil, Telugu, Bengali, Marathi, Kannada, Malayalam, Gujarati, Punjabi, Odia, Urdu — all built in.</p>
+
+      <p>The side strip glows softly when a message arrives. The back panel has a tiny dot display that tells you who's calling — without you picking up the screen. The camera shoots steady video even when you're walking or riding in an auto.</p>
+
+      <p>It charges from 0 to 50 % in about <b>fifteen minutes</b>. It stays cool when you game. And the matte finish doesn't slip from your hand, doesn't smudge, and doesn't look like every other phone on the shelf.</p>
+
+      <div class="why-points">
+        <div class="why-point">
+          <div class="icon">IR</div>
+          <div class="txt">
+            <h4>Universal Remote</h4>
+            <p>Control your TV, AC, and set-top box right from your phone. No extra app needed.</p>
+          </div>
+        </div>
+        <div class="why-point">
+          <div class="icon">FM</div>
+          <div class="txt">
+            <h4>FM Radio, Built In</h4>
+            <p>Listen to music, cricket, and radio without using data or even a SIM card.</p>
+          </div>
+        </div>
+        <div class="why-point">
+          <div class="icon">11</div>
+          <div class="txt">
+            <h4>Speaks Your Language</h4>
+            <p>Voice assistant and menus in eleven Indian languages. Works offline.</p>
+          </div>
+        </div>
+        <div class="why-point">
+          <div class="icon">₹</div>
+          <div class="txt">
+            <h4>Tap to Pay</h4>
+            <p>UPI Lite and NFC payments work right from the lock screen. No app opened.</p>
+          </div>
+        </div>
+        <div class="why-point">
+          <div class="icon">⚡</div>
+          <div class="txt">
+            <h4>Charges in Minutes</h4>
+            <p>65 W fast charging takes you from empty to half in about fifteen minutes.</p>
+          </div>
+        </div>
+        <div class="why-point">
+          <div class="icon">🎮</div>
+          <div class="txt">
+            <h4>Cool Under Pressure</h4>
+            <p>Vapor chamber keeps the phone cool during long gaming sessions.</p>
+          </div>
+        </div>
+        <div class="why-point">
+          <div class="icon">📡</div>
+          <div class="txt">
+            <h4>NavIC GPS</h4>
+            <p>Uses India's own satellite system. Reliable maps across the country.</p>
+          </div>
+        </div>
+        <div class="why-point">
+          <div class="icon">💡</div>
+          <div class="txt">
+            <h4>Glow Strip + Dot Display</h4>
+            <p>See calls and messages at a glance without turning on the full screen.</p>
+          </div>
+        </div>
+      </div>
+
+      <p class="why-closer">At <b>₹29,999</b>, you're getting a phone that feels <em>premium in your hand</em>, <em>useful every single day</em>, and <em>made for the way India lives</em>. Not a copy. Not a compromise. A phone that just gets you.</p>
+    </div>
+  </div>
+  <!-- ============ END WHY PHEONIX ============ -->
+
+</section>
+
+<footer>
+  <div class="inner">
+    <div class="b"><span class="m"></span>BR-HAX // PHEONIX</div>
+    <div class="t">ENGINEERED BEYOND THE EXPECTED.</div>
+    <div>Concept showcase · not a commercial product</div>
+  </div>
+</footer>
+
+<div class="qbadge">
+  <span>QUALITY · <b id="qtier">—</b></span>
+  <button id="qcycle">CHANGE</button>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+
+/* ================================================================
+   1. QUALITY TIER
+   ================================================================ */
+function detectTier(){
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return 'minimal';
+  const cores = navigator.hardwareConcurrency || 2;
+  const mobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const touch = 'ontouchstart' in window && innerWidth < 900;
+  if (cores <= 2) return 'minimal';
+  if (mobile || touch) return cores <= 4 ? 'low' : 'medium';
+  if (cores <= 4) return 'medium';
+  return 'high';
+}
+const TIERS = {
+  high:    { dpr:1.5,  aa:true,  rotate:true,  fps:60, cylSeg:32, cirSeg:24, boxSeg:6, detail:'max' },
+  medium:  { dpr:1.25, aa:true,  rotate:true,  fps:50, cylSeg:20, cirSeg:14, boxSeg:4, detail:'high' },
+  low:     { dpr:1.0,  aa:false, rotate:true,  fps:35, cylSeg:12, cirSeg:8,  boxSeg:3, detail:'med' },
+  minimal: { dpr:1.0,  aa:false, rotate:false, fps:24, cylSeg:8,  cirSeg:6,  boxSeg:2, detail:'low' }
+};
+let currentTier = detectTier();
+let Q = TIERS[currentTier];
+const tierNames = { high:'HIGH', medium:'MED', low:'LOW', minimal:'MIN' };
+document.getElementById('qtier').textContent = tierNames[currentTier];
+
+function makeRenderer(canvas){
+  const r = new THREE.WebGLRenderer({
+    canvas, antialias: Q.aa, alpha: true,
+    powerPreference: 'high-performance',
+    precision: 'mediump', stencil: false
+  });
+  r.setPixelRatio(Math.min(devicePixelRatio, Q.dpr));
+  r.shadowMap.enabled = false;
+  r.setClearColor(0x000000, 0);
+  return r;
+}
+function fitRendererToCanvas(renderer, camera, canvas){
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  if (w === 0 || h === 0) return false;
+  const dw = Math.floor(w * renderer.getPixelRatio());
+  const dh = Math.floor(h * renderer.getPixelRatio());
+  if (canvas.width !== dw || canvas.height !== dh){
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    return true;
+  }
+  return false;
+}
+
+/* ================================================================
+   2. PHONE MODEL
+   ================================================================ */
+const W_PHONE = 72, H_PHONE = 158, D_PHONE = 8.4, R_PHONE = 4.6;
+
+const FINISHES = {
+  obsidian: { label:'Obsidian Black', body:0x08090c, rail:0x2b2e35, island:0x0c0d11, lens:0x040508,
+    roughness:0.36, metalness:0.55, clearcoat:0.9, emissive:0x000000, glow:0x7eff9c, tint:0xffffff },
+  graphite: { label:'Titanium Graphite', body:0x2a2d32, rail:0x646870, island:0x1e2126, lens:0x0a0a0c,
+    roughness:0.28, metalness:0.85, clearcoat:0.8, emissive:0x000000, glow:0x9effbc, tint:0xf2f4f8 },
+  glacier:  { label:'Glacier Silver', body:0xd8dce1, rail:0xc2c7cd, island:0xe4e8ec, lens:0x0d0f12,
+    roughness:0.22, metalness:0.7, clearcoat:0.9, emissive:0x000000, glow:0x7eff9c, tint:0xe9f2ff },
+  blaze:    { label:'Solar Blaze', body:0xa8431a, rail:0x8a3d18, island:0x8a3714, lens:0x0d0805,
+    roughness:0.34, metalness:0.6, clearcoat:0.85, emissive:0x3a1505, glow:0xffb060, tint:0xffd9b0 },
+  pheonix:  { label:'PHEONIX Green', body:0x0a2015, rail:0x2a5233, island:0x081810, lens:0x03110a,
+    roughness:0.38, metalness:0.5, clearcoat:0.9, emissive:0x0a3016, glow:0x7eff9c, tint:0xd6ffe6 },
+  midnight: { label:'Midnight Blue', body:0x0a1a30, rail:0x22406a, island:0x081424, lens:0x03060e,
+    roughness:0.32, metalness:0.68, clearcoat:0.88, emissive:0x030a18, glow:0x7eb8ff, tint:0xd6e6ff }
+};
+
+function roundedRectShape(w, h, r){
+  const s = new THREE.Shape();
+  const x = -w/2, y = -h/2;
+  s.moveTo(x + r, y);
+  s.lineTo(x + w - r, y); s.quadraticCurveTo(x + w, y, x + w, y + r);
+  s.lineTo(x + w, y + h - r); s.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  s.lineTo(x + r, y + h); s.quadraticCurveTo(x, y + h, x, y + h - r);
+  s.lineTo(x, y + r); s.quadraticCurveTo(x, y, x + r, y);
+  return s;
+}
+function rr(g, x, y, w, h, r){
+  g.beginPath();
+  g.moveTo(x + r, y);
+  g.arcTo(x + w, y, x + w, y + h, r);
+  g.arcTo(x + w, y + h, x, y + h, r);
+  g.arcTo(x, y + h, x, y, r);
+  g.arcTo(x, y, x + w, y, r);
+  g.closePath();
+}
+
+let SCREEN_TEX = null;
+function makeScreenTexture(){
+  if (SCREEN_TEX) return SCREEN_TEX;
+  const c = document.createElement('canvas');
+  c.width = 288; c.height = 620;
+  const g = c.getContext('2d');
+
+  const grd = g.createLinearGradient(0, 0, 288, 620);
+  grd.addColorStop(0,   '#03130b');
+  grd.addColorStop(0.42,'#07271b');
+  grd.addColorStop(0.75,'#04150f');
+  grd.addColorStop(1,   '#010806');
+  g.fillStyle = grd; g.fillRect(0, 0, 288, 620);
+
+  const blob = (x, y, r, col) => {
+    const rg = g.createRadialGradient(x, y, 0, x, y, r);
+    rg.addColorStop(0, col); rg.addColorStop(1, 'rgba(0,0,0,0)');
+    g.fillStyle = rg; g.fillRect(0, 0, 288, 620);
+  };
+  blob(212, 138, 230, 'rgba(126,255,156,0.32)');
+  blob(58,  430, 210, 'rgba(60,170,255,0.16)');
+  blob(150, 560, 190, 'rgba(126,255,156,0.10)');
+
+  g.fillStyle = 'rgba(126,255,156,0.85)';
+  rr(g, 112, 44, 64, 6, 3); g.fill();
+  g.fillStyle = 'rgba(255,255,255,0.20)';
+  rr(g, 40, 44, 26, 6, 3); g.fill();
+  rr(g, 222, 44, 26, 6, 3); g.fill();
+
+  g.textAlign = 'center';
+  g.fillStyle = 'rgba(238,255,246,0.97)';
+  g.font = '700 74px Inter, system-ui, -apple-system, sans-serif';
+  g.fillText('9:41', 144, 152);
+  g.fillStyle = 'rgba(170,228,196,0.7)';
+  g.font = '600 14px Inter, system-ui, sans-serif';
+  g.fillText('MON · 12 MAY', 144, 182);
+
+  g.fillStyle = 'rgba(255,255,255,0.055)';
+  rr(g, 28, 214, 232, 68, 17); g.fill();
+  g.strokeStyle = 'rgba(255,255,255,0.06)'; g.lineWidth = 1; g.stroke();
+  g.fillStyle = 'rgba(126,255,156,0.92)';
+  rr(g, 46, 232, 32, 32, 10); g.fill();
+  g.fillStyle = 'rgba(226,255,238,0.78)';
+  rr(g, 90, 236, 118, 8, 4); g.fill();
+  g.fillStyle = 'rgba(190,235,212,0.36)';
+  rr(g, 90, 253, 72, 7, 4); g.fill();
+  g.fillStyle = 'rgba(126,255,156,0.55)';
+  rr(g, 90, 266, 44, 5, 3); g.fill();
+
+  g.fillStyle = 'rgba(255,255,255,0.035)';
+  rr(g, 28, 296, 232, 52, 15); g.fill();
+  g.fillStyle = 'rgba(120,190,255,0.55)';
+  rr(g, 46, 312, 22, 22, 7); g.fill();
+  g.fillStyle = 'rgba(210,235,255,0.35)';
+  rr(g, 80, 314, 96, 7, 4); g.fill();
+  g.fillStyle = 'rgba(210,235,255,0.20)';
+  rr(g, 80, 327, 60, 6, 3); g.fill();
+
+  g.fillStyle = 'rgba(255,255,255,0.06)';
+  rr(g, 40, 520, 208, 64, 32); g.fill();
+  for (let i = 0; i < 4; i++){
+    g.fillStyle = i === 0 ? 'rgba(126,255,156,0.88)' : 'rgba(255,255,255,0.22)';
+    rr(g, 56 + i * 50, 539, 30, 26, 9); g.fill();
+  }
+
+  const tex = new THREE.CanvasTexture(c);
+  if ('colorSpace' in tex) tex.colorSpace = THREE.SRGBColorSpace;
+  tex.anisotropy = 4;
+  SCREEN_TEX = tex;
+  return tex;
+}
+
+let FROST_TEX = null;
+function makeFrostTexture(){
+  if (FROST_TEX) return FROST_TEX;
+  const c = document.createElement('canvas');
+  c.width = 256; c.height = 256;
+  const g = c.getContext('2d');
+  const img = g.createImageData(256, 256);
+  for (let i = 0; i < img.data.length; i += 4){
+    const v = 128 + (Math.random() * 60 - 30);
+    img.data[i] = v; img.data[i+1] = v; img.data[i+2] = v; img.data[i+3] = 255;
+  }
+  g.putImageData(img, 0, 0);
+  const tex = new THREE.CanvasTexture(c);
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+  tex.repeat.set(3, 6);
+  FROST_TEX = tex;
+  return tex;
+}
+
+const LENSES = [
+  { x:-11, y: 14, r: 6.6, type:'round' },
+  { x:-11, y:-13, r: 6.2, type:'round' },
+  { x: 11, y: 15, r: 4.2, type:'round' },
+  { x: 11, y: -8, r: 4.0, type:'peri'  }
+];
+
+function buildPhone(finishKey){
+  const f = FINISHES[finishKey];
+  const S = Q.cylSeg, C = Q.cirSeg, B = Q.boxSeg;
+  const max  = Q.detail === 'max';
+  const high = Q.detail === 'max' || Q.detail === 'high';
+  const usePhysical = Q.detail !== 'low';
+  const MatClass = usePhysical ? THREE.MeshPhysicalMaterial : THREE.MeshStandardMaterial;
+  const MP = usePhysical
+    ? (c, r, m, cc) => ({ color:c, roughness:r, metalness:m, clearcoat:cc })
+    : (c, r, m, cc) => ({ color:c, roughness:r, metalness:m });
+
+  const root = new THREE.Group();
+  const glow = {};
+
+  const frostTex = high ? makeFrostTexture() : null;
+  const bodyMat = new MatClass({
+    ...MP(f.body, f.roughness, f.metalness, f.clearcoat),
+    emissive: f.emissive, emissiveIntensity: f.emissive ? 0.3 : 0,
+    roughnessMap: frostTex || null,
+    clearcoatRoughnessMap: frostTex || null
+  });
+  const railMat   = new MatClass(MP(f.rail, 0.16, 0.98, 0.5));
+  const islandMat = new MatClass(MP(f.island, 0.3, 0.55, 0.9));
+  const lensMat   = new MatClass(MP(f.lens, 0.05, 0.9, 1.0));
+  const darkMat   = new THREE.MeshStandardMaterial({ color:0x050505, roughness:0.85 });
+  const metalMat  = new THREE.MeshStandardMaterial({ color:0xb8bcc2, roughness:0.28, metalness:0.95 });
+  const copperMat = new THREE.MeshStandardMaterial({ color:0xb87333, roughness:0.32, metalness:0.95 });
+  const graphiteMat = new THREE.MeshStandardMaterial({ color:0x1a1c20, roughness:0.72, metalness:0.2 });
+  const accentMat = new THREE.MeshBasicMaterial({ color: f.glow, transparent:true, opacity:0.75 });
+  const glowMat   = new THREE.MeshBasicMaterial({ color: f.glow, transparent:true, opacity:0.9 });
+
+  const chassis = new THREE.Group();
+  chassis.name = 'chassis';
+  const body = new THREE.Mesh(new RoundedBoxGeometry(W_PHONE, H_PHONE, D_PHONE, B, R_PHONE), bodyMat);
+  chassis.add(body);
+
+  const railSide = new THREE.BoxGeometry(0.7, H_PHONE - 3, D_PHONE - 0.6);
+  for (const sx of [-1, 1]){
+    const r = new THREE.Mesh(railSide, railMat);
+    r.position.set(sx * (W_PHONE/2 - 0.32), 0, 0);
+    chassis.add(r);
+  }
+  const railTopBot = new THREE.BoxGeometry(W_PHONE - 3, 0.7, D_PHONE - 0.6);
+  const railT = new THREE.Mesh(railTopBot, railMat);
+  railT.position.set(0, H_PHONE/2 - 0.32, 0); chassis.add(railT);
+  const railB = new THREE.Mesh(railTopBot, railMat);
+  railB.position.set(0, -H_PHONE/2 + 0.32, 0); chassis.add(railB);
+
+  if (high){
+    for (const sx of [-1, 1]){
+      for (const sz of [1, -1]){
+        const hl = new THREE.Mesh(
+          new THREE.BoxGeometry(0.16, H_PHONE - 6, 0.16),
+          new THREE.MeshBasicMaterial({ color: 0x9aa4b0, transparent:true, opacity:0.35 })
+        );
+        hl.position.set(sx * (W_PHONE/2 - 0.72), 0, sz * (D_PHONE/2 - 0.55));
+        chassis.add(hl);
+      }
+    }
+  }
+
+  {
+    const bandGeo = new THREE.BoxGeometry(0.72, 0.7, D_PHONE - 0.5);
+    const bandInst = new THREE.InstancedMesh(bandGeo, darkMat, 4);
+    const d = new THREE.Object3D();
+    const positions = [
+      [-W_PHONE/2 + 0.32, 55, 0, Math.PI/2],
+      [-W_PHONE/2 + 0.32, -55, 0, Math.PI/2],
+      [ W_PHONE/2 - 0.32, 55, 0, Math.PI/2],
+      [ W_PHONE/2 - 0.32, -55, 0, Math.PI/2],
+    ];
+    positions.forEach(([x, y, z, ry], i) => {
+      d.position.set(x, y, z); d.rotation.set(0, ry, 0);
+      d.updateMatrix(); bandInst.setMatrixAt(i, d.matrix);
+    });
+    bandInst.instanceMatrix.needsUpdate = true;
+    chassis.add(bandInst);
+  }
+
+  if (high){
+    const powerBtn = new THREE.Mesh(new THREE.BoxGeometry(1.2, 22, D_PHONE - 2.4), railMat);
+    powerBtn.position.set(W_PHONE/2 + 0.25, 30, 0); chassis.add(powerBtn);
+    if (max){
+      for (let i = -3; i <= 3; i++){
+        const line = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.6, D_PHONE - 3), darkMat);
+        line.position.set(W_PHONE/2 + 0.9, 30 + i * 3, 0);
+        chassis.add(line);
+      }
+    }
+    const volUp = new THREE.Mesh(new THREE.BoxGeometry(1.2, 24, D_PHONE - 2.4), railMat);
+    volUp.position.set(W_PHONE/2 + 0.25, 66, 0); chassis.add(volUp);
+    const volDn = new THREE.Mesh(new THREE.BoxGeometry(1.2, 24, D_PHONE - 2.4), railMat);
+    volDn.position.set(W_PHONE/2 + 0.25, 38, 0); chassis.add(volDn);
+    const muteSw = new THREE.Mesh(new THREE.BoxGeometry(1.2, 14, D_PHONE - 2.4), railMat);
+    muteSw.position.set(-W_PHONE/2 - 0.25, 50, 0); chassis.add(muteSw);
+  }
+
+  const simLine = new THREE.Mesh(new THREE.BoxGeometry(0.35, 22, D_PHONE - 3), darkMat);
+  simLine.position.set(-W_PHONE/2 + 0.05, -30, 0);
+  chassis.add(simLine);
+  if (high){
+    const pinHole = new THREE.Mesh(
+      new THREE.CircleGeometry(0.55, Math.max(8, C/2)),
+      new THREE.MeshBasicMaterial({ color: 0x000000 })
+    );
+    pinHole.position.set(-W_PHONE/2 - 0.36, -20.4, 0);
+    pinHole.rotation.y = -Math.PI/2;
+    chassis.add(pinHole);
+  }
+
+  const usbWell = new THREE.Mesh(new THREE.BoxGeometry(9.4, 1.0, 3.4),
+    new THREE.MeshBasicMaterial({ color:0x000000 }));
+  usbWell.position.set(0, -H_PHONE/2 + 0.35, 0);
+  chassis.add(usbWell);
+  const usbFrame = new THREE.Mesh(new THREE.BoxGeometry(10.0, 0.85, 3.7), railMat);
+  usbFrame.position.set(0, -H_PHONE/2 + 0.35, 0);
+  chassis.add(usbFrame);
+  if (max){
+    const tongue = new THREE.Mesh(
+      new THREE.BoxGeometry(7.0, 0.35, 1.4),
+      new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.7 })
+    );
+    tongue.position.set(0, -H_PHONE/2 + 0.6, 0);
+    chassis.add(tongue);
+    for (let i = -8; i <= 8; i++){
+      const pin = new THREE.Mesh(
+        new THREE.BoxGeometry(0.12, 0.05, 0.35),
+        new THREE.MeshStandardMaterial({ color: 0xc9a557, roughness: 0.35, metalness: 0.9 })
+      );
+      pin.position.set(i * 0.37, -H_PHONE/2 + 0.82, 0.55);
+      chassis.add(pin);
+    }
+  }
+
+  if (high){
+    const holeGeo = new THREE.CylinderGeometry(0.4, 0.4, 0.9, Math.max(8, C/2));
+    const holeCount = max ? 10 : 5;
+    const holeInst = new THREE.InstancedMesh(holeGeo, darkMat, holeCount + 3);
+    const d = new THREE.Object3D();
+    let idx = 0;
+    for (let i = 0; i < holeCount; i++){
+      d.position.set(11 + i * 1.9, -H_PHONE/2 + 0.35, 0);
+      d.rotation.set(Math.PI/2, 0, 0);
+      d.updateMatrix(); holeInst.setMatrixAt(idx++, d.matrix);
+    }
+    d.position.set(-8, -H_PHONE/2 + 0.35, 0); d.rotation.set(Math.PI/2, 0, 0);
+    d.updateMatrix(); holeInst.setMatrixAt(idx++, d.matrix);
+    d.position.set(-W_PHONE/2 + 12, H_PHONE/2 - 0.35, 0); d.rotation.set(Math.PI/2, 0, 0);
+    d.updateMatrix(); holeInst.setMatrixAt(idx++, d.matrix);
+    d.position.set(-W_PHONE/2 + 18, H_PHONE/2 - 0.35, 0); d.rotation.set(Math.PI/2, 0, 0);
+    d.updateMatrix(); holeInst.setMatrixAt(idx++, d.matrix);
+    holeInst.instanceMatrix.needsUpdate = true;
+    chassis.add(holeInst);
+  }
+
+  if (high){
+    const irPort = new THREE.Mesh(
+      new THREE.CircleGeometry(1.3, Math.max(10, C)),
+      new THREE.MeshPhysicalMaterial({
+        color: 0x1a0505, roughness: 0.08, metalness: 0.9,
+        emissive: 0x5a0808, emissiveIntensity: 0.35
+      })
+    );
+    irPort.position.set(W_PHONE/2 - 8, H_PHONE/2 - 0.02, 0);
+    irPort.rotation.x = -Math.PI/2;
+    chassis.add(irPort);
+
+    const irRing = new THREE.Mesh(
+      new THREE.RingGeometry(1.45, 1.7, Math.max(10, C)),
+      new THREE.MeshBasicMaterial({ color: 0x2a2d33, side: THREE.DoubleSide })
+    );
+    irRing.position.set(W_PHONE/2 - 8, H_PHONE/2 - 0.01, 0);
+    irRing.rotation.x = -Math.PI/2;
+    chassis.add(irRing);
+  }
+
+  if (max){
+    const irDot = new THREE.Mesh(
+      new THREE.CircleGeometry(0.85, C),
+      new THREE.MeshPhysicalMaterial({ color:0x1a0a05, roughness:0.1, metalness:0.5 })
+    );
+    irDot.position.set(W_PHONE/2 - 10, H_PHONE/2 - 0.02, 0);
+    irDot.rotation.x = -Math.PI/2;
+    chassis.add(irDot);
+  }
+
+  root.add(chassis);
+
+  const glyph = new THREE.Group();
+  glyph.name = 'glyph';
+  const trough = new THREE.Mesh(new THREE.BoxGeometry(0.25, 60, 0.4), darkMat);
+  trough.position.set(-W_PHONE/2 - 0.55, -35, 0);
+  glyph.add(trough);
+
+  const glyphBar = new THREE.Mesh(new THREE.BoxGeometry(0.15, 56, 0.25), glowMat.clone());
+  glyphBar.position.set(-W_PHONE/2 - 0.6, -35, 0);
+  glyph.add(glyphBar);
+  glow.glyph = glyphBar;
+
+  if (high){
+    const dotGeo = new THREE.CircleGeometry(0.35, Math.max(8, C/2));
+    const dotInst = new THREE.InstancedMesh(dotGeo, glowMat.clone(), 6);
+    const d = new THREE.Object3D();
+    for (let i = 0; i < 6; i++){
+      d.position.set(-W_PHONE/2 - 0.69, -60 + i * 10, 0);
+      d.rotation.set(0, -Math.PI/2, 0);
+      d.updateMatrix(); dotInst.setMatrixAt(i, d.matrix);
+    }
+    dotInst.instanceMatrix.needsUpdate = true;
+    glyph.add(dotInst);
+  }
+  root.add(glyph);
+
+  const vapor = new THREE.Group();
+  vapor.name = 'vapor';
+  if (high){
+    const vcPlate = new THREE.Mesh(
+      new THREE.BoxGeometry(W_PHONE - 14, 56, 0.9), copperMat
+    );
+    vcPlate.position.set(0, 22, -1.35);
+    vapor.add(vcPlate);
+    const lines = max ? 16 : 8;
+    for (let i = 0; i < lines; i++){
+      const ln = new THREE.Mesh(
+        new THREE.BoxGeometry(W_PHONE - 20, 0.28, 0.12),
+        new THREE.MeshStandardMaterial({ color:0x8a5626, roughness:0.5, metalness:0.85 })
+      );
+      ln.position.set(0, 2 + i * 3.2, -1.82);
+      vapor.add(ln);
+    }
+  }
+  root.add(vapor);
+
+  const battery = new THREE.Group();
+  battery.name = 'battery';
+  const batMesh = new THREE.Mesh(
+    new THREE.BoxGeometry(W_PHONE - 10, H_PHONE - 40, 4.4),
+    new THREE.MeshStandardMaterial({ color:0x141416, roughness:0.9, metalness:0.05 })
+  );
+  battery.add(batMesh);
+
+  const batLabel = new THREE.Mesh(
+    new THREE.PlaneGeometry(W_PHONE - 22, 10),
+    new THREE.MeshStandardMaterial({ color:0x1c1c1e, roughness:0.8 })
+  );
+  batLabel.position.set(0, -30, 2.21);
+  battery.add(batLabel);
+
+  if (high){
+    for (let i = 0; i < 5; i++){
+      const line = new THREE.Mesh(
+        new THREE.PlaneGeometry(8 + i * 2, 0.5),
+        new THREE.MeshBasicMaterial({ color:0x3a3a3a })
+      );
+      line.position.set(-5, 22 - i * 3, 2.21);
+      battery.add(line);
+    }
+    const tabGeo = new THREE.BoxGeometry(3.4, 1.6, 0.4);
+    for (const tx of [-12, 0, 12]){
+      const tab = new THREE.Mesh(tabGeo, copperMat);
+      tab.position.set(tx, 48, 2.2);
+      battery.add(tab);
+    }
+  }
+  root.add(battery);
+
+  const pcb = new THREE.Group();
+  pcb.name = 'pcb';
+  const pcbMesh = new THREE.Mesh(
+    new THREE.BoxGeometry(W_PHONE - 6, 62, 1.0),
+    new THREE.MeshStandardMaterial({ color:0x0d2a1a, roughness:0.6, metalness:0.3 })
+  );
+  pcbMesh.position.set(0, 30, 0);
+  pcb.add(pcbMesh);
+
+  const cuMat = new THREE.MeshStandardMaterial({ color:0xc9772e, roughness:0.4, metalness:0.9 });
+  const traceCount = high ? 14 : 6;
+  for (let i = 0; i < traceCount; i++){
+    const cu = new THREE.Mesh(
+      new THREE.BoxGeometry(20 + Math.random() * 30, 0.5, 0.15), cuMat
+    );
+    cu.position.set(-10 + Math.random() * 20, 40 - i * 4, 0.58);
+    pcb.add(cu);
+  }
+
+  const chip = new THREE.Mesh(
+    new THREE.BoxGeometry(14, 14, 1.2),
+    new THREE.MeshStandardMaterial({ color:0x101010, roughness:0.5, metalness:0.4 })
+  );
+  chip.position.set(0, 32, 1.05);
+  pcb.add(chip);
+
+  if (high){
+    const chip2 = new THREE.Mesh(
+      new THREE.BoxGeometry(8, 8, 0.8),
+      new THREE.MeshStandardMaterial({ color:0x151515, roughness:0.5, metalness:0.4 })
+    );
+    chip2.position.set(-18, 20, 0.9);
+    pcb.add(chip2);
+
+    const shield = new THREE.Mesh(new THREE.BoxGeometry(18, 12, 1.5), metalMat);
+    shield.position.set(18, 42, 0.9);
+    pcb.add(shield);
+
+    const shield2 = new THREE.Mesh(new THREE.BoxGeometry(14, 10, 1.3), metalMat);
+    shield2.position.set(-16, 48, 0.85);
+    pcb.add(shield2);
+
+    for (let i = 0; i < 3; i++){
+      const xtal = new THREE.Mesh(
+        new THREE.CylinderGeometry(1.4, 1.4, 1.6, Math.max(10, S/2)), metalMat
+      );
+      xtal.position.set(-22 + i * 6, 6, 0.9);
+      pcb.add(xtal);
+    }
+
+    for (let i = 0; i < 22; i++){
+      const passive = new THREE.Mesh(
+        new THREE.BoxGeometry(0.9 + Math.random() * 0.8, 1.0, 0.4),
+        i % 2 ? darkMat : copperMat
+      );
+      passive.position.set(-26 + Math.random() * 52, -25 + Math.random() * 60, 0.85);
+      pcb.add(passive);
+    }
+  }
+
+  if (high){
+    const fpc = new THREE.Mesh(
+      new THREE.BoxGeometry(28, 3, 0.6),
+      new THREE.MeshStandardMaterial({ color:0x0a0a0a, roughness:0.7 })
+    );
+    fpc.position.set(0, 56, 0.85);
+    pcb.add(fpc);
+  }
+  root.add(pcb);
+
+  const haptic = new THREE.Group();
+  haptic.name = 'haptic';
+  if (high){
+    const hBody = new THREE.Mesh(
+      new THREE.CylinderGeometry(4.4, 4.4, 4.6, Math.max(10, S/2)), metalMat
+    );
+    hBody.rotation.z = Math.PI/2;
+    hBody.position.set(-18, -46, -2.2);
+    haptic.add(hBody);
+
+    const hCap = new THREE.Mesh(
+      new THREE.CylinderGeometry(4.6, 4.6, 0.6, Math.max(10, S/2)), graphiteMat
+    );
+    hCap.rotation.z = Math.PI/2;
+    hCap.position.set(-20.4, -46, -2.2);
+    haptic.add(hCap);
+
+    const hRing = new THREE.Mesh(
+      new THREE.TorusGeometry(4.5, 0.18, 5, Math.max(12, C)), copperMat
+    );
+    hRing.rotation.y = Math.PI/2;
+    hRing.position.set(-15.6, -46, -2.2);
+    haptic.add(hRing);
+  }
+  root.add(haptic);
+
+  const speaker = new THREE.Group();
+  speaker.name = 'speaker';
+  if (high){
+    const spkBox = new THREE.Mesh(new THREE.BoxGeometry(30, 11, 4.0), graphiteMat);
+    spkBox.position.set(10, -52, -2.3);
+    speaker.add(spkBox);
+
+    for (let i = 0; i < 3; i++){
+      const ring = new THREE.Mesh(
+        new THREE.TorusGeometry(2.0 + i * 1.15, 0.22, 6, Math.max(10, C/2)),
+        new THREE.MeshStandardMaterial({ color:0x2e3138, roughness:0.6, metalness:0.4 })
+      );
+      ring.position.set(10, -52, -0.28 + i * 0.02);
+      speaker.add(ring);
+    }
+    const dome = new THREE.Mesh(
+      new THREE.SphereGeometry(1.1, Math.max(8, C/2), Math.max(6, C/3), 0, Math.PI*2, 0, Math.PI/2),
+      new THREE.MeshStandardMaterial({ color:0x50555e, roughness:0.45, metalness:0.6 })
+    );
+    dome.position.set(10, -52, -0.28);
+    dome.rotation.x = Math.PI/2;
+    speaker.add(dome);
+  }
+  root.add(speaker);
+
+  const coil = new THREE.Group();
+  coil.name = 'coil';
+  if (high){
+    const coilTurns = max ? 11 : 6;
+    for (let i = 0; i < coilTurns; i++){
+      const t = new THREE.Mesh(
+        new THREE.TorusGeometry(15.5 - i * 0.85, 0.26, 6, Math.max(14, C)), copperMat
+      );
+      t.position.set(0, -14, -3.35);
+      coil.add(t);
+    }
+    const coilCore = new THREE.Mesh(
+      new THREE.CylinderGeometry(8.6, 8.6, 0.35, Math.max(10, S)), graphiteMat
+    );
+    coilCore.rotation.x = Math.PI/2;
+    coilCore.position.set(0, -14, -3.35);
+    coil.add(coilCore);
+
+    const nfc = new THREE.Mesh(
+      new THREE.TorusGeometry(20, 0.22, 5, Math.max(16, C)),
+      new THREE.MeshStandardMaterial({ color:0xc9a557, roughness:0.4, metalness:0.9 })
+    );
+    nfc.position.set(0, 30, -3.55);
+    coil.add(nfc);
+
+    if (max){
+      for (let i = 0; i < 12; i++){
+        const a = (i / 12) * Math.PI * 2;
+        const mag = new THREE.Mesh(
+          new THREE.BoxGeometry(1.4, 0.4, 0.5),
+          new THREE.MeshStandardMaterial({ color: 0x1a1c20, roughness: 0.6, metalness: 0.5 })
+        );
+        mag.position.set(Math.cos(a) * 12, Math.sin(a) * 12 - 14, -3.9);
+        coil.add(mag);
+      }
+    }
+  }
+  root.add(coil);
+
+  const camMod = new THREE.Group();
+  camMod.name = 'camera';
+  const ISL_X = -W_PHONE/2 + 26, ISL_Y = H_PHONE/2 - 28;
+  if (high){
+    const camPcb = new THREE.Mesh(
+      new THREE.BoxGeometry(38, 48, 0.9),
+      new THREE.MeshStandardMaterial({ color:0x0b1c12, roughness:0.6, metalness:0.3 })
+    );
+    camPcb.position.set(ISL_X, ISL_Y, -3.0);
+    camMod.add(camPcb);
+
+    for (const L of LENSES){
+      const sensor = new THREE.Mesh(
+        new THREE.BoxGeometry(L.r * 1.7, L.r * 1.7, 1.2),
+        new THREE.MeshStandardMaterial({ color:0x14161a, roughness:0.55, metalness:0.35 })
+      );
+      sensor.position.set(ISL_X + L.x, ISL_Y + L.y, -3.9);
+      camMod.add(sensor);
+
+      const barrel = new THREE.Mesh(
+        new THREE.CylinderGeometry(L.r * 0.9, L.r * 0.9, 2.6, Math.max(8, S/2)), metalMat
+      );
+      barrel.rotation.x = Math.PI/2;
+      barrel.position.set(ISL_X + L.x, ISL_Y + L.y, -2.2);
+      camMod.add(barrel);
+
+      const ois = new THREE.Mesh(
+        new THREE.TorusGeometry(L.r * 1.05, 0.3, 5, Math.max(10, C/2)), copperMat
+      );
+      ois.position.set(ISL_X + L.x, ISL_Y + L.y, -1.4);
+      camMod.add(ois);
+
+      const ois2 = new THREE.Mesh(
+        new THREE.TorusGeometry(L.r * 1.22, 0.18, 5, Math.max(10, C/2)), metalMat
+      );
+      ois2.position.set(ISL_X + L.x, ISL_Y + L.y, -1.4);
+      camMod.add(ois2);
+    }
+
+    const flex = new THREE.Mesh(
+      new THREE.BoxGeometry(6, 34, 0.35),
+      new THREE.MeshStandardMaterial({ color:0x8a6a2a, roughness:0.75, metalness:0.1 })
+    );
+    flex.position.set(ISL_X + 12, ISL_Y - 40, -2.6);
+    camMod.add(flex);
+  }
+  root.add(camMod);
+
+  const display = new THREE.Group();
+  display.name = 'display';
+
+  const bezel = new THREE.Mesh(
+    new THREE.PlaneGeometry(W_PHONE - 1.0, H_PHONE - 1.0),
+    new THREE.MeshStandardMaterial({ color:0x020203, roughness:0.9 })
+  );
+  bezel.position.z = -0.02;
+  display.add(bezel);
+
+  const screenSeg = max ? 16 : (high ? 8 : 2);
+  const screenGeo = new THREE.PlaneGeometry(W_PHONE - 3.0, H_PHONE - 3.0, screenSeg, screenSeg);
+  {
+    const posAttr = screenGeo.attributes.position;
+    for (let i = 0; i < posAttr.count; i++){
+      const x = posAttr.getX(i);
+      const nx = x / ((W_PHONE - 3.0) / 2);
+      posAttr.setZ(i, -Math.pow(Math.abs(nx), 2.4) * 0.7);
+    }
+    posAttr.needsUpdate = true;
+    screenGeo.computeVertexNormals();
+  }
+
+  let screenMat;
+  if (Q.detail === 'low' || Q.detail === 'med'){
+    screenMat = new THREE.MeshStandardMaterial({
+      color: f.body, roughness:0.15, metalness:0.3,
+      emissive: f.glow, emissiveIntensity:0.22
+    });
+  } else {
+    screenMat = new THREE.MeshBasicMaterial({ map: makeScreenTexture(), toneMapped: false });
+  }
+
+  const screen = new THREE.Mesh(screenGeo, screenMat);
+  screen.position.z = 0.01;
+  display.add(screen);
+
+  if (high){
+    const earSlit = new THREE.Mesh(
+      new THREE.BoxGeometry(14, 1.0, 0.35),
+      new THREE.MeshBasicMaterial({ color: 0x000000 })
+    );
+    earSlit.position.set(0, H_PHONE/2 - 1.8, 0.03);
+    display.add(earSlit);
+
+    const earMeshCount = max ? 20 : 10;
+    for (let i = 0; i < earMeshCount; i++){
+      const mesh = new THREE.Mesh(
+        new THREE.CircleGeometry(0.28, Math.max(6, C/3)),
+        new THREE.MeshBasicMaterial({ color: 0x2a2a2a })
+      );
+      mesh.position.set(-6.5 + i * (13 / (earMeshCount - 1)), H_PHONE/2 - 1.8, 0.035);
+      display.add(mesh);
+    }
+  }
+
+  const fcamRing = new THREE.Mesh(
+    new THREE.RingGeometry(1.55, 1.85, C),
+    new THREE.MeshBasicMaterial({ color: 0x0a0a0a, side: THREE.DoubleSide })
+  );
+  fcamRing.position.set(0, H_PHONE/2 - 5.5, 0.03);
+  display.add(fcamRing);
+
+  const fcam = new THREE.Mesh(
+    new THREE.CircleGeometry(1.5, C),
+    new THREE.MeshPhysicalMaterial({ color: 0x020308, roughness:0.05, metalness:0.7 })
+  );
+  fcam.position.set(0, H_PHONE/2 - 5.5, 0.04);
+  display.add(fcam);
+
+  if (max){
+    const glint = new THREE.Mesh(
+      new THREE.CircleGeometry(0.3, Math.max(8, C/2)),
+      new THREE.MeshBasicMaterial({ color: 0x4a5a70, transparent:true, opacity:0.8 })
+    );
+    glint.position.set(-0.4, H_PHONE/2 - 5.1, 0.05);
+    display.add(glint);
+  }
+
+  if (high){
+    const flex = new THREE.Mesh(
+      new THREE.PlaneGeometry(20, 12),
+      new THREE.MeshStandardMaterial({ color: 0x8a6a2a, roughness:0.7, side:THREE.DoubleSide })
+    );
+    flex.position.set(0, H_PHONE/2 - 14, -0.6);
+    flex.rotation.x = Math.PI / 2;
+    display.add(flex);
+  }
+
+  display.position.z = D_PHONE / 2 - 0.35;
+  root.add(display);
+  root.userData.screen = display;
+  root.userData.screenMesh = screen;
+
+  const glass = new THREE.Group();
+  glass.name = 'glass';
+
+  const glassMesh = new THREE.Mesh(
+    new THREE.PlaneGeometry(W_PHONE - 1.2, H_PHONE - 1.2),
+    new THREE.MeshPhysicalMaterial({
+      color: 0x0a0e14, roughness: 0.02, metalness: 0.1,
+      clearcoat: 1.0, clearcoatRoughness: 0.01,
+      transparent: true, opacity: 0.22
+    })
+  );
+  glassMesh.position.z = D_PHONE/2 - 0.18;
+  glass.add(glassMesh);
+
+  if (max){
+    const refl = new THREE.Mesh(
+      new THREE.PlaneGeometry(W_PHONE - 8, 34),
+      new THREE.MeshBasicMaterial({ color: 0xffffff, transparent:true, opacity:0.05 })
+    );
+    refl.position.set(-9, 22, D_PHONE/2 - 0.15);
+    refl.rotation.z = -0.32;
+    glass.add(refl);
+
+    const refl2 = new THREE.Mesh(
+      new THREE.PlaneGeometry(14, 60),
+      new THREE.MeshBasicMaterial({ color: 0xffffff, transparent:true, opacity:0.025 })
+    );
+    refl2.position.set(18, -18, D_PHONE/2 - 0.15);
+    refl2.rotation.z = -0.32;
+    glass.add(refl2);
+  }
+  root.add(glass);
+
+  const back = new THREE.Group();
+  back.name = 'back';
+  back.rotation.y = Math.PI;
+  back.position.z = -D_PHONE / 2 - 0.02;
+
+  const island = new THREE.Group();
+  island.position.set(ISL_X, ISL_Y, 0.6);
+  back.add(island);
+
+  const islandBody = new THREE.Mesh(
+    new RoundedBoxGeometry(40, 50, 2.4, Math.max(2, B-1), 8), islandMat
+  );
+  island.add(islandBody);
+
+  if (high){
+    try {
+      const outer = roundedRectShape(41.6, 51.6, 9.4);
+      const hole = new THREE.Path();
+      hole.setFromPoints(roundedRectShape(39.2, 49.2, 8.2).getPoints(20));
+      outer.holes.push(hole);
+      const frameGeo = new THREE.ShapeGeometry(outer, 10);
+      const frame = new THREE.Mesh(frameGeo, accentMat.clone());
+      frame.position.z = 1.24;
+      island.add(frame);
+      glow.island = frame;
+    } catch(e){}
+  }
+
+  for (const L of LENSES){
+    const px = L.x, py = L.y, r = L.r;
+
+    if (L.type === 'peri'){
+      const housing = new THREE.Mesh(
+        new RoundedBoxGeometry(r * 2.1, r * 2.1, 1.6, 2, r * 0.5), railMat
+      );
+      housing.position.set(px, py, 1.35);
+      island.add(housing);
+
+      const periGlass = new THREE.Mesh(
+        new THREE.PlaneGeometry(r * 1.5, r * 1.5), lensMat
+      );
+      periGlass.position.set(px, py, 2.18);
+      island.add(periGlass);
+
+      const periInner = new THREE.Mesh(
+        new THREE.CircleGeometry(r * 0.5, Math.max(8, C/2)),
+        new THREE.MeshBasicMaterial({ color: 0x121a26 })
+      );
+      periInner.position.set(px, py, 2.2);
+      island.add(periInner);
+
+      if (max){
+        const prism = new THREE.Mesh(
+          new THREE.CircleGeometry(r * 0.32, Math.max(6, C/3)),
+          new THREE.MeshBasicMaterial({ color: 0x2a3a4a })
+        );
+        prism.position.set(px + r * 0.4, py, 2.22);
+        island.add(prism);
+      }
+      continue;
+    }
+
+    const barrel = new THREE.Mesh(
+      new THREE.CylinderGeometry(r, r, 1.2, S), railMat
+    );
+    barrel.rotation.x = Math.PI/2;
+    barrel.position.set(px, py, 1.4);
+    island.add(barrel);
+
+    const ring = new THREE.Mesh(
+      new THREE.RingGeometry(r * 0.85, r * 0.98, C),
+      new THREE.MeshBasicMaterial({ color: 0x2a2d33, side: THREE.DoubleSide })
+    );
+    ring.position.set(px, py, 2.01);
+    island.add(ring);
+
+    const lens = new THREE.Mesh(new THREE.CircleGeometry(r * 0.82, C), lensMat);
+    lens.position.set(px, py, 2.02);
+    island.add(lens);
+
+    const inner = new THREE.Mesh(
+      new THREE.RingGeometry(r * 0.4, r * 0.55, C),
+      new THREE.MeshBasicMaterial({ color: 0x1a2030, transparent:true, opacity:0.85, side:THREE.DoubleSide })
+    );
+    inner.position.set(px, py, 2.04);
+    island.add(inner);
+
+    const ap = new THREE.Mesh(
+      new THREE.CircleGeometry(r * 0.28, C),
+      new THREE.MeshBasicMaterial({ color: 0x05080c })
+    );
+    ap.position.set(px, py, 2.05);
+    island.add(ap);
+
+    if (max){
+      const glint = new THREE.Mesh(
+        new THREE.CircleGeometry(r * 0.14, Math.max(8, C/2)),
+        new THREE.MeshBasicMaterial({ color: 0x5a6a7a, transparent:true, opacity:0.9 })
+      );
+      glint.position.set(px - r * 0.28, py + r * 0.28, 2.06);
+      island.add(glint);
+    }
+  }
+
+  const flashBody = new THREE.Mesh(
+    new THREE.CylinderGeometry(2.3, 2.3, 0.5, S), railMat
+  );
+  flashBody.rotation.x = Math.PI/2;
+  flashBody.position.set(11, -20, 1.4);
+  island.add(flashBody);
+
+  const flashInner = new THREE.Mesh(
+    new THREE.CircleGeometry(1.9, C),
+    new THREE.MeshStandardMaterial({ color:0xfffae0, emissive:0x8a6520, emissiveIntensity:0.25 })
+  );
+  flashInner.position.set(11, -20, 1.65);
+  island.add(flashInner);
+
+  if (max){
+    const flashWarm = new THREE.Mesh(
+      new THREE.CircleGeometry(0.9, Math.max(8, C/2)),
+      new THREE.MeshStandardMaterial({ color:0xffdda0, emissive:0x8a5020, emissiveIntensity:0.2 })
+    );
+    flashWarm.position.set(11, -20, 1.66);
+    island.add(flashWarm);
+  }
+
+  if (high){
+    const af = new THREE.Mesh(
+      new THREE.CircleGeometry(0.7, Math.max(8, C/2)),
+      new THREE.MeshBasicMaterial({ color: 0x1a2a1a })
+    );
+    af.position.set(-11, 1, 2.02);
+    island.add(af);
+  }
+
+  if (high){
+    const etch = new THREE.Mesh(
+      new THREE.PlaneGeometry(28, 0.6),
+      new THREE.MeshBasicMaterial({ color: 0x4a4d52, transparent:true, opacity:0.85 })
+    );
+    etch.position.set(0, -22.6, 2.41);
+    island.add(etch);
+  }
+
+  const logo = new THREE.Group();
+  logo.position.set(0, -H_PHONE/2 + 32, 0.1);
+
+  const hexOuter = new THREE.Mesh(
+    new THREE.CylinderGeometry(4.0, 4.0, 0.4, 6),
+    new THREE.MeshPhysicalMaterial({ color: f.rail, roughness:0.25, metalness:0.95 })
+  );
+  hexOuter.rotation.x = Math.PI / 2;
+  logo.add(hexOuter);
+
+  const hexGlow = new THREE.Mesh(new THREE.CircleGeometry(3.0, 6), glowMat.clone());
+  hexGlow.position.z = 0.22;
+  logo.add(hexGlow);
+  glow.logo = hexGlow;
+
+  if (high){
+    const wordmark = new THREE.Mesh(
+      new THREE.PlaneGeometry(24, 1.6),
+      new THREE.MeshBasicMaterial({ color: f.rail, transparent:true, opacity:0.85 })
+    );
+    wordmark.position.set(0, -8, 0);
+    logo.add(wordmark);
+
+    const wordmark2 = new THREE.Mesh(
+      new THREE.PlaneGeometry(12, 0.7),
+      new THREE.MeshBasicMaterial({ color: f.rail, transparent:true, opacity:0.4 })
+    );
+    wordmark2.position.set(0, -12, 0);
+    logo.add(wordmark2);
+  }
+  back.add(logo);
+
+  if (high){
+    const rearDisp = new THREE.Group();
+    rearDisp.position.set(0, -H_PHONE/2 + 52, 0.05);
+    const dotCount = max ? 24 : 12;
+    const cols = 6;
+    const dotGeo = new THREE.CircleGeometry(0.55, Math.max(6, C/3));
+    const dotInst = new THREE.InstancedMesh(dotGeo, glowMat.clone(), dotCount);
+    const d = new THREE.Object3D();
+    for (let i = 0; i < dotCount; i++){
+      const cx = (i % cols) - (cols - 1) / 2;
+      const cy = Math.floor(i / cols) - 1;
+      d.position.set(cx * 2.2, cy * 2.2, 0.03);
+      d.updateMatrix();
+      dotInst.setMatrixAt(i, d.matrix);
+    }
+    dotInst.instanceMatrix.needsUpdate = true;
+    rearDisp.add(dotInst);
+    glow.rearDisplay = dotInst;
+    back.add(rearDisp);
+
+    const rearPlate = new THREE.Mesh(
+      new THREE.PlaneGeometry(cols * 2.4, 7.2),
+      new THREE.MeshStandardMaterial({ color: 0x020203, roughness: 0.7 })
+    );
+    rearPlate.position.set(0, -H_PHONE/2 + 52, 0.02);
+    back.add(rearPlate);
+  }
+
+  if (max){
+    const hairline = new THREE.Mesh(
+      new THREE.PlaneGeometry(0.3, H_PHONE - 100),
+      new THREE.MeshBasicMaterial({ color: f.rail, transparent:true, opacity:0.2 })
+    );
+    hairline.position.set(0, 20, 0.02);
+    back.add(hairline);
+  }
+
+  root.add(back);
+
+  root.userData.layers = { glass, display, chassis, vapor, pcb, battery, haptic, speaker, coil, camera: camMod, back, glyph };
+  root.userData.materials = { bodyMat, railMat, islandMat, lensMat, accentMat, glowMat };
+  root.userData.glow = glow;
+  root.userData.finish = finishKey;
+  return root;
+}
+
+function applyFinish(phone, finishKey){
+  const f = FINISHES[finishKey];
+  const m = phone.userData.materials;
+  m.bodyMat.color.setHex(f.body);
+  m.bodyMat.roughness = f.roughness;
+  m.bodyMat.metalness = f.metalness;
+  if ('clearcoat' in m.bodyMat) m.bodyMat.clearcoat = f.clearcoat;
+  m.bodyMat.emissive.setHex(f.emissive);
+  m.bodyMat.emissiveIntensity = f.emissive ? 0.3 : 0;
+  m.railMat.color.setHex(f.rail);
+  m.islandMat.color.setHex(f.island);
+  m.lensMat.color.setHex(f.lens);
+
+  const g = phone.userData.glow;
+  if (g.logo) g.logo.material.color.setHex(f.glow);
+  if (g.glyph) g.glyph.material.color.setHex(f.glow);
+  if (g.island) g.island.material.color.setHex(f.glow);
+  if (g.rearDisplay) g.rearDisplay.material.color.setHex(f.glow);
+
+  const screen = phone.userData.screenMesh;
+  if (screen && screen.material){
+    if (screen.material.map){
+      screen.material.color.setHex(f.tint);
+    } else {
+      screen.material.color.setHex(f.body);
+      screen.material.emissive.setHex(f.glow);
+    }
+    screen.material.needsUpdate = true;
+  }
+  phone.userData.finish = finishKey;
+}
+
+const SPLIT_OFFSETS = {
+  glass:    26, display:  17, chassis:   0, glyph:     0, vapor:    -4,
+  pcb:      -9, haptic:  -13, speaker: -13.5, battery: -16, coil:    -20,
+  camera:  -23, back:    -30
+};
+
+function applySplit(phone, amt){
+  const L = phone.userData.layers;
+  for (const name of Object.keys(SPLIT_OFFSETS)){
+    const layer = L[name];
+    if (!layer) continue;
+    if (layer.userData.baseZ === undefined){
+      layer.userData.baseZ = layer.position.z;
+    }
+    layer.position.z = layer.userData.baseZ + SPLIT_OFFSETS[name] * amt;
+  }
+}
+
+/* ================================================================
+   3. DESIGN SCENE
+   ================================================================ */
+const designCanvas = document.getElementById('design-canvas');
+const designStage  = document.getElementById('design-stage');
+const designRenderer = makeRenderer(designCanvas);
+const designScene = new THREE.Scene();
+const designCam = new THREE.PerspectiveCamera(26, 1, 0.1, 200);
+designCam.position.set(19, 8, 28);
+
+const lightGroups = {
+  studio: new THREE.Group(), dramatic: new THREE.Group(),
+  daylight: new THREE.Group(), lowlight: new THREE.Group()
+};
+lightGroups.studio.add(new THREE.AmbientLight(0xffffff, 0.55));
+const sK = new THREE.DirectionalLight(0xffffff, 2.4); sK.position.set(8,14,8);
+lightGroups.studio.add(sK);
+const sF = new THREE.DirectionalLight(0xa8d8ff, 0.9); sF.position.set(-6,6,-10);
+lightGroups.studio.add(sF);
+const sR = new THREE.DirectionalLight(0x7eff9c, 0.5); sR.position.set(-4,2,-14);
+lightGroups.studio.add(sR);
+
+lightGroups.dramatic.add(new THREE.AmbientLight(0xffffff, 0.08));
+const dK = new THREE.DirectionalLight(0xffffff, 3.2); dK.position.set(8,12,6);
+lightGroups.dramatic.add(dK);
+const dR = new THREE.DirectionalLight(0x7eff9c, 1.4); dR.position.set(-10,2,-8);
+lightGroups.dramatic.add(dR);
+
+lightGroups.daylight.add(new THREE.AmbientLight(0xffffff, 0.9));
+const dlK = new THREE.DirectionalLight(0xffffff, 2.0); dlK.position.set(10,20,10);
+lightGroups.daylight.add(dlK);
+const dlF = new THREE.DirectionalLight(0xd9e6ff, 0.8); dlF.position.set(-6,10,-10);
+lightGroups.daylight.add(dlF);
+
+lightGroups.lowlight.add(new THREE.AmbientLight(0xffffff, 0.1));
+const ll1 = new THREE.PointLight(0x7eff9c, 1.8); ll1.position.set(0,8,10);
+lightGroups.lowlight.add(ll1);
+const ll2 = new THREE.PointLight(0x3a2a10, 0.8); ll2.position.set(6,-4,-8);
+lightGroups.lowlight.add(ll2);
+
+Object.values(lightGroups).forEach(g => designScene.add(g));
+function setLighting(name){
+  Object.entries(lightGroups).forEach(([k,g]) => g.visible = (k === name));
+}
+setLighting('studio');
+
+const designPhone = buildPhone('obsidian');
+designPhone.scale.setScalar(0.055);
+designScene.add(designPhone);
+
+const grid = new THREE.GridHelper(80, 24, 0x101010, 0x0a0a0a);
+grid.position.y = -5;
+grid.material.transparent = true;
+grid.material.opacity = 0.4;
+designScene.add(grid);
+
+const designControls = new OrbitControls(designCam, designCanvas);
+designControls.enablePan = false;
+designControls.enableDamping = false;
+designControls.minDistance = 12;
+designControls.maxDistance = 60;
+designControls.autoRotate = Q.rotate;
+designControls.autoRotateSpeed = 0.4;
+designControls.target.set(0, 0, 0);
+designControls.update();
+
+/* ================================================================
+   4. PCB PARSER
+   ================================================================ */
+function parseTrackEntry(str){
+  const p = str.split('~');
+  if (p[0] !== 'TRACK') return null;
+  const coords = (p[4] || '').trim().split(/\s+/).map(Number);
+  if (coords.length < 4) return null;
+  return { width: parseFloat(p[1]) || 0, layer: parseInt(p[2], 10) || 0, net: p[3] || '',
+    x1: coords[0], y1: coords[1], x2: coords[2], y2: coords[3] };
+}
+function parsePadEntry(str){
+  const p = str.split('~');
+  if (p[0] !== 'PAD') return null;
+  return { shape: p[1] || 'RECT', x: parseFloat(p[2]) || 0, y: parseFloat(p[3]) || 0,
+    w: parseFloat(p[4]) || 0, h: parseFloat(p[5]) || 0, layer: parseInt(p[6], 10) || 0,
+    net: p[7] || '', num: p[8] || '' };
+}
+function parseLibHeader(header){
+  const parts = header.split('`');
+  const head = parts[0].split('~');
+  const x = parseFloat(head[1]) || 0, y = parseFloat(head[2]) || 0;
+  const pkg = (parts[1] || '').split('~~~')[0];
+  const attrs = {};
+  for (let i = 2; i + 1 < parts.length; i += 2){
+    const k = parts[i]; let v = parts[i+1];
+    if (i + 2 >= parts.length) v = v.split('~~~')[0];
+    attrs[k] = v;
+  }
+  return { x, y, pkg, attrs };
+}
+function tracePolygon(edges){
+  if (edges.length < 3) return [];
+  const key = (x, y) => Math.round(x * 10) + '_' + Math.round(y * 10);
+  const adj = new Map();
+  const push = (k, v) => { if (!adj.has(k)) adj.set(k, []); adj.get(k).push(v); };
+  for (const e of edges){
+    push(key(e.x1, e.y1), [e.x2, e.y2]);
+    push(key(e.x2, e.y2), [e.x1, e.y1]);
+  }
+  const start = [edges[0].x1, edges[0].y1];
+  const poly = [start];
+  let cur = start, prev = null;
+  for (let i = 0; i < 4000; i++){
+    const nbrs = adj.get(key(cur[0], cur[1])) || [];
+    const next = nbrs.find(n => !prev || Math.hypot(n[0] - prev[0], n[1] - prev[1]) > 0.05);
+    if (!next) break;
+    if (Math.hypot(next[0] - start[0], next[1] - start[1]) < 0.2) break;
+    poly.push(next); prev = cur; cur = next;
+  }
+  return poly;
+}
+function parseBoard(data){
+  const components = [], copperTracks = [], outlineTracks = [];
+  const layerIds = new Set();
+  const shapes = Array.isArray(data.shape) ? data.shape : [];
+  for (const entry of shapes){
+    if (typeof entry !== 'string') continue;
+    if (entry.startsWith('LIB~')){
+      const chunks = entry.split('#@$');
+      const hdr = parseLibHeader(chunks[0]);
+      const pads = [];
+      for (let i = 1; i < chunks.length; i++){
+        const g = chunks[i];
+        if (g.startsWith('PAD~')){
+          const pad = parsePadEntry(g);
+          if (pad){ pads.push(pad); layerIds.add(pad.layer); }
+        }
+      }
+      components.push({ id: 'c' + components.length, package: hdr.pkg,
+        x: hdr.x, y: hdr.y, pads });
+    } else if (entry.startsWith('TRACK~')){
+      const t = parseTrackEntry(entry);
+      if (t){
+        layerIds.add(t.layer);
+        if (t.layer === 10) outlineTracks.push(t);
+        else copperTracks.push(t);
+      }
+    }
+  }
+  const bbox = data.BBox || { x:0, y:0, width:1000, height:1000 };
+  return { bbox, components, copperTracks, outlineTracks,
+    outlinePolygon: tracePolygon(outlineTracks),
+    layerIds: [...layerIds].sort((a, b) => a - b) };
+}
+
+const sX = (x, t) => (x - t.cx) * t.scale;
+const sZ = (y, t) => (y - t.cy) * t.scale;
+const sW = (w, t) => w * t.scale;
+
+function boardShape(board, t){
+  const shape = new THREE.Shape();
+  const poly = board.outlinePolygon;
+  if (poly.length >= 3){
+    shape.moveTo(sX(poly[0][0], t), -sZ(poly[0][1], t));
+    for (let i = 1; i < poly.length; i++) shape.lineTo(sX(poly[i][0], t), -sZ(poly[i][1], t));
+    shape.closePath();
+    return shape;
+  }
+  const w = board.bbox.width * t.scale;
+  const h = board.bbox.height * t.scale;
+  const r = Math.min(w, h) * 0.04;
+  const x = -w/2, y = -h/2;
+  shape.moveTo(x + r, y);
+  shape.lineTo(x + w - r, y); shape.quadraticCurveTo(x + w, y, x + w, y + r);
+  shape.lineTo(x + w, y + h - r); shape.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  shape.lineTo(x + r, y + h); shape.quadraticCurveTo(x, y + h, x, y + h - r);
+  shape.lineTo(x, y + r); shape.quadraticCurveTo(x, y, x + r, y);
+  return shape;
+}
+
+function trackGeometry(tracks, t, yLevel, thickness){
+  const pos = [], idx = [];
+  let o = 0;
+  for (const tr of tracks){
+    const x1 = sX(tr.x1, t), z1 = sZ(tr.y1, t);
+    const x2 = sX(tr.x2, t), z2 = sZ(tr.y2, t);
+    const dx = x2 - x1, dz = z2 - z1;
+    const len = Math.hypot(dx, dz);
+    if (len < 1e-6) continue;
+    const hw = Math.max((tr.width * t.scale) / 2, 0.0004);
+    const nx = (-dz / len) * hw, nz = (dx / len) * hw;
+    const yb = yLevel, yt = yLevel + thickness;
+    pos.push(
+      x1 + nx, yb, z1 + nz, x2 + nx, yb, z2 + nz, x2 - nx, yb, z2 - nz, x1 - nx, yb, z1 - nz,
+      x1 + nx, yt, z1 + nz, x2 + nx, yt, z2 + nz, x2 - nx, yt, z2 - nz, x1 - nx, yt, z1 - nz
+    );
+    idx.push(
+      o+0,o+2,o+1, o+0,o+3,o+2, o+4,o+5,o+6, o+4,o+6,o+7,
+      o+0,o+1,o+5, o+0,o+5,o+4, o+1,o+2,o+6, o+1,o+6,o+5,
+      o+2,o+3,o+7, o+2,o+7,o+6, o+3,o+0,o+4, o+3,o+4,o+7
+    );
+    o += 8;
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  g.setIndex(idx);
+  g.computeVertexNormals();
+  return g;
+}
+
+/* ================================================================
+   5. PCB SCENE
+   ================================================================ */
+const BOARD_T = 0.02;
+const TOP_COLOR = 0xc9772e, BOT_COLOR = 0x7a4a1e, PAD_COLOR = 0xc9a557;
+const MAX_PADS = 800;
+const MAX_BODIES = 140;
+
+const pcbCanvas = document.getElementById('pcb-canvas');
+const pcbStage  = document.getElementById('pcb-stage');
+const pcbRenderer = makeRenderer(pcbCanvas);
+const pcbScene = new THREE.Scene();
+const pcbCam = new THREE.PerspectiveCamera(30, 1, 0.01, 100);
+pcbCam.position.set(0, 1.5, 2.4);
+
+pcbScene.add(new THREE.AmbientLight(0xffffff, 0.7));
+const pcbKey = new THREE.DirectionalLight(0xffffff, 2.2);
+pcbKey.position.set(2, 4, 2); pcbScene.add(pcbKey);
+const pcbRim = new THREE.DirectionalLight(0x7eff9c, 1.0);
+pcbRim.position.set(-3, 2, -3); pcbScene.add(pcbRim);
+const pcbFill = new THREE.DirectionalLight(0xa8d8ff, 0.5);
+pcbFill.position.set(3, -2, 2); pcbScene.add(pcbFill);
+
+const pcbGroup = new THREE.Group();
+pcbScene.add(pcbGroup);
+
+const pcbControls = new OrbitControls(pcbCam, pcbCanvas);
+pcbControls.enablePan = false;
+pcbControls.enableDamping = false;
+pcbControls.minDistance = 0.6;
+pcbControls.maxDistance = 4;
+pcbControls.autoRotate = Q.rotate;
+pcbControls.autoRotateSpeed = 0.7;
+pcbControls.target.set(0, 0, 0);
+
+let pcbState = { mode:'component', showComponents:true, showTop:true, showBottom:false, revealed:false };
+let pcbBodyInstanced = null;
+let pcbSubstrate = null;
+let pcbTopCopper = null;
+let pcbBotCopper = null;
+let pcbPadInstanced = null;
+let pcbDetailGroup = null;
+
+let SILK_TEX = null;
+function makeSilkTexture(){
+  if (SILK_TEX) return SILK_TEX;
+  const c = document.createElement('canvas');
+  c.width = 1024; c.height = 1024;
+  const g = c.getContext('2d');
+  g.clearRect(0, 0, 1024, 1024);
+  g.fillStyle = 'rgba(240,240,240,0.85)';
+  g.font = 'bold 22px ui-monospace, monospace';
+
+  const labels = ['R1','R2','R3','C1','C2','C5','U1','U3','J1','J2','L1','L2',
+                  'TP1','TP2','TP3','D1','Q1','Y1','Y2','F1'];
+  for (let i = 0; i < 60; i++){
+    const l = labels[i % labels.length];
+    const x = 60 + Math.random() * 900;
+    const y = 60 + Math.random() * 900;
+    g.save();
+    g.translate(x, y);
+    g.rotate((Math.random() - 0.5) * 0.2);
+    g.fillText(l, 0, 0);
+    g.restore();
+  }
+  g.fillStyle = 'rgba(240,240,240,0.5)';
+  for (let i = 0; i < 12; i++){
+    g.fillRect(40 + i * 80, 500, 40, 4);
+    g.fillRect(500, 40 + i * 80, 4, 40);
+  }
+  const tex = new THREE.CanvasTexture(c);
+  if ('colorSpace' in tex) tex.colorSpace = THREE.SRGBColorSpace;
+  SILK_TEX = tex;
+  return tex;
+}
+
+function buildPcbScene(b){
+  while (pcbGroup.children.length){
+    const c = pcbGroup.children.pop();
+    c.traverse?.(o => { o.geometry?.dispose?.(); });
+  }
+  pcbBodyInstanced = pcbSubstrate = pcbTopCopper = pcbBotCopper = pcbPadInstanced = pcbDetailGroup = null;
+
+  const bbox = b.bbox;
+  const t = { cx: bbox.x + bbox.width/2, cy: bbox.y + bbox.height/2,
+              scale: 1 / Math.max(bbox.width, bbox.height) };
+
+  const shape = boardShape(b, t);
+  const boardGeo = new THREE.ExtrudeGeometry(shape, {
+    depth: BOARD_T, bevelEnabled: false, curveSegments: 6
+  });
+  boardGeo.rotateX(-Math.PI/2);
+  boardGeo.translate(0, -BOARD_T/2, 0);
+  boardGeo.computeVertexNormals();
+
+  const usePhysical = Q.detail === 'max' || Q.detail === 'high';
+  const BoardMat = usePhysical ? THREE.MeshPhysicalMaterial : THREE.MeshStandardMaterial;
+  const boardParams = usePhysical
+    ? { color:0x0a1f12, roughness:0.55, metalness:0.25, clearcoat:0.35 }
+    : { color:0x0a1f12, roughness:0.6, metalness:0.25 };
+
+  pcbSubstrate = new THREE.Mesh(boardGeo, new BoardMat(boardParams));
+  pcbSubstrate.name = 'substrate';
+  pcbGroup.add(pcbSubstrate);
+
+  if (usePhysical){
+    const edge = new THREE.Mesh(
+      new THREE.ExtrudeGeometry(shape, { depth: 0.0015, bevelEnabled: false, curveSegments: 6 }),
+      new THREE.MeshStandardMaterial({ color: 0xd4a24a, roughness: 0.32, metalness: 0.95 })
+    );
+    edge.rotateX(-Math.PI/2);
+    edge.position.y = -BOARD_T/2 - 0.001;
+    edge.scale.set(1.002, 1, 1.002);
+    pcbGroup.add(edge);
+  }
+
+  const topTracks = b.copperTracks.filter(tr => tr.layer === 1);
+  if (topTracks.length){
+    const geo = trackGeometry(topTracks, t, BOARD_T/2 + 0.001, 0.0018);
+    if (geo.attributes.position.count > 0){
+      pcbTopCopper = new THREE.Mesh(geo, new BoardMat({
+        color: TOP_COLOR, roughness: 0.35, metalness: 0.85
+      }));
+      pcbTopCopper.name = 'top-copper';
+      pcbGroup.add(pcbTopCopper);
+    }
+  }
+  const botTracks = b.copperTracks.filter(tr => tr.layer === 2 || tr.layer === 12);
+  if (botTracks.length){
+    const geo = trackGeometry(botTracks, t, -BOARD_T/2 - 0.0028, 0.0018);
+    if (geo.attributes.position.count > 0){
+      pcbBotCopper = new THREE.Mesh(geo, new BoardMat({
+        color: BOT_COLOR, roughness: 0.45, metalness: 0.8
+      }));
+      pcbBotCopper.name = 'bot-copper';
+      pcbGroup.add(pcbBotCopper);
+    }
+  }
+
+  const padList = [];
+  outer:
+  for (const c of b.components){
+    for (const p of c.pads){
+      if (p.layer === 2) continue;
+      padList.push(p);
+      if (padList.length >= MAX_PADS) break outer;
+    }
+  }
+  if (padList.length){
+    const padGeo = new THREE.PlaneGeometry(1, 1);
+    const padMat = new BoardMat({ color: PAD_COLOR, roughness: 0.3, metalness: 0.9 });
+    pcbPadInstanced = new THREE.InstancedMesh(padGeo, padMat, padList.length);
+    pcbPadInstanced.name = 'pads';
+    const dummy = new THREE.Object3D();
+    for (let i = 0; i < padList.length; i++){
+      const p = padList[i];
+      dummy.position.set(sX(p.x, t), BOARD_T/2 + 0.002, sZ(p.y, t));
+      dummy.rotation.set(-Math.PI/2, 0, 0);
+      dummy.scale.set(Math.max(sW(p.w, t), 0.004), Math.max(sW(p.h, t), 0.004), 1);
+      dummy.updateMatrix();
+      pcbPadInstanced.setMatrixAt(i, dummy.matrix);
+    }
+    pcbPadInstanced.instanceMatrix.needsUpdate = true;
+    pcbPadInstanced.frustumCulled = false;
+    pcbGroup.add(pcbPadInstanced);
+  }
+
+  const bodyData = [];
+  outer2:
+  for (const c of b.components){
+    const pkg = (c.package || '').toLowerCase();
+    if (/test-pad/.test(pkg)) continue;
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    for (const p of c.pads){
+      minX = Math.min(minX, p.x - p.w/2);
+      minY = Math.min(minY, p.y - p.h/2);
+      maxX = Math.max(maxX, p.x + p.w/2);
+      maxY = Math.max(maxY, p.y + p.h/2);
+    }
+    if (!isFinite(minX)) continue;
+    const cx = (minX + maxX) / 2, cy = (minY + maxY) / 2;
+    const w = Math.max(maxX - minX, 20), h = Math.max(maxY - minY, 20);
+    let bodyH = 0.005;
+    if (/usb|jack|connector|fpc|sim|speaker|microphone|battery|bat-connector/.test(pkg)) bodyH = 0.014;
+    else if (/button|switch/.test(pkg)) bodyH = 0.010;
+    else if (/inductor|led|diode|fuse/.test(pkg)) bodyH = 0.007;
+    else if (/qfn|qfp|ic|codec|charger|boost|mux|xcvr|compute|tps|mp3429|bq25792|tusb|ts3usb|hd3ss|tlv|sim/.test(pkg)) bodyH = 0.006;
+    bodyData.push({
+      cx: sX(cx, t), cz: sZ(cy, t),
+      sx: Math.max(sW(w, t) * 0.85, 0.006),
+      sy: bodyH,
+      sz: Math.max(sW(h, t) * 0.85, 0.006),
+      baseY: BOARD_T/2 + bodyH/2 + 0.002
+    });
+    if (bodyData.length >= MAX_BODIES) break outer2;
+  }
+  if (bodyData.length){
+    const unitBox = new THREE.BoxGeometry(1, 1, 1);
+    const bodyMat = new BoardMat({ color: 0x0d0d0f, roughness: 0.75, metalness: 0.15 });
+    pcbBodyInstanced = new THREE.InstancedMesh(unitBox, bodyMat, bodyData.length);
+    const dummy = new THREE.Object3D();
+    bodyData.forEach((g, i) => {
+      dummy.position.set(g.cx, g.baseY, g.cz);
+      dummy.scale.set(g.sx, g.sy, g.sz);
+      dummy.updateMatrix();
+      pcbBodyInstanced.setMatrixAt(i, dummy.matrix);
+    });
+    pcbBodyInstanced.instanceMatrix.needsUpdate = true;
+    pcbBodyInstanced.frustumCulled = false;
+    pcbGroup.add(pcbBodyInstanced);
+  }
+
+  pcbDetailGroup = new THREE.Group();
+  pcbDetailGroup.name = 'pcb-detail';
+  pcbGroup.add(pcbDetailGroup);
+
+  if (usePhysical){
+    const viaCount = 320;
+    const viaRingGeo = new THREE.RingGeometry(0.0018, 0.0035, 8);
+    const viaRingMat = new THREE.MeshBasicMaterial({ color: 0x6a4a1e, side: THREE.DoubleSide });
+    const viaHoleGeo = new THREE.CircleGeometry(0.0014, 8);
+    const viaHoleMat = new THREE.MeshBasicMaterial({ color: 0x000000, side: THREE.DoubleSide });
+    const viaRings = new THREE.InstancedMesh(viaRingGeo, viaRingMat, viaCount);
+    const viaHoles = new THREE.InstancedMesh(viaHoleGeo, viaHoleMat, viaCount);
+    const d = new THREE.Object3D();
+    const halfW = (bbox.width) * t.scale * 0.44;
+    const halfH = (bbox.height) * t.scale * 0.44;
+    for (let i = 0; i < viaCount; i++){
+      d.position.set(
+        (Math.random() - 0.5) * 2 * halfW,
+        BOARD_T/2 + 0.0008,
+        (Math.random() - 0.5) * 2 * halfH
+      );
+      d.rotation.set(-Math.PI/2, 0, 0);
+      d.updateMatrix();
+      viaRings.setMatrixAt(i, d.matrix);
+      viaHoles.setMatrixAt(i, d.matrix);
+    }
+    viaRings.instanceMatrix.needsUpdate = true;
+    viaHoles.instanceMatrix.needsUpdate = true;
+    viaRings.frustumCulled = false;
+    viaHoles.frustumCulled = false;
+    pcbDetailGroup.add(viaRings);
+    pcbDetailGroup.add(viaHoles);
+
+    const tpCount = 24;
+    const tpGeo = new THREE.CircleGeometry(0.0055, 12);
+    const tpMat = new THREE.MeshStandardMaterial({ color: 0xd4a24a, roughness: 0.28, metalness: 0.95, side: THREE.DoubleSide });
+    const tpInst = new THREE.InstancedMesh(tpGeo, tpMat, tpCount);
+    const tpRingGeo = new THREE.RingGeometry(0.0058, 0.0085, 12);
+    const tpRingMat = new THREE.MeshBasicMaterial({ color: 0x8a5a2a, side: THREE.DoubleSide });
+    const tpRingInst = new THREE.InstancedMesh(tpRingGeo, tpRingMat, tpCount);
+    for (let i = 0; i < tpCount; i++){
+      d.position.set(
+        (Math.random() - 0.5) * 2 * halfW * 0.9,
+        BOARD_T/2 + 0.0016,
+        (Math.random() - 0.5) * 2 * halfH * 0.9
+      );
+      d.rotation.set(-Math.PI/2, 0, 0);
+      d.updateMatrix();
+      tpInst.setMatrixAt(i, d.matrix);
+      tpRingInst.setMatrixAt(i, d.matrix);
+    }
+    tpInst.instanceMatrix.needsUpdate = true;
+    tpRingInst.instanceMatrix.needsUpdate = true;
+    tpInst.frustumCulled = false;
+    tpRingInst.frustumCulled = false;
+    pcbDetailGroup.add(tpInst);
+    pcbDetailGroup.add(tpRingInst);
+
+    const xtalCount = 8;
+    const xtalGeo = new THREE.CylinderGeometry(0.004, 0.004, 0.004, 10);
+    const xtalMat = new THREE.MeshStandardMaterial({ color: 0xc0c4cc, roughness: 0.28, metalness: 0.95 });
+    const xtalInst = new THREE.InstancedMesh(xtalGeo, xtalMat, xtalCount);
+    for (let i = 0; i < xtalCount; i++){
+      d.position.set(
+        (Math.random() - 0.5) * 2 * halfW * 0.6,
+        BOARD_T/2 + 0.005,
+        (Math.random() - 0.5) * 2 * halfH * 0.6
+      );
+      d.rotation.set(0, 0, 0);
+      d.updateMatrix();
+      xtalInst.setMatrixAt(i, d.matrix);
+    }
+    xtalInst.instanceMatrix.needsUpdate = true;
+    xtalInst.frustumCulled = false;
+    pcbDetailGroup.add(xtalInst);
+
+    const smdCount = 420;
+    const smdGeo = new THREE.BoxGeometry(1, 1, 1);
+    const smdMatBody = new THREE.MeshStandardMaterial({ color: 0x1a1c20, roughness: 0.65, metalness: 0.25 });
+    const smdInst = new THREE.InstancedMesh(smdGeo, smdMatBody, smdCount);
+    for (let i = 0; i < smdCount; i++){
+      const size = 0.0035 + Math.random() * 0.0025;
+      d.position.set(
+        (Math.random() - 0.5) * 2 * halfW * 0.95,
+        BOARD_T/2 + 0.0022 + size / 2,
+        (Math.random() - 0.5) * 2 * halfH * 0.95
+      );
+      d.scale.set(size * 2.2, size, size * 1.1);
+      d.rotation.set(0, Math.random() * Math.PI, 0);
+      d.updateMatrix();
+      smdInst.setMatrixAt(i, d.matrix);
+    }
+    smdInst.instanceMatrix.needsUpdate = true;
+    smdInst.frustumCulled = false;
+    pcbDetailGroup.add(smdInst);
+
+    const silkGeo = new THREE.PlaneGeometry(bbox.width * t.scale * 0.98, bbox.height * t.scale * 0.98);
+    const silkMat = new THREE.MeshBasicMaterial({
+      map: makeSilkTexture(),
+      transparent: true,
+      opacity: 0.55,
+      depthWrite: false
+    });
+    const silk = new THREE.Mesh(silkGeo, silkMat);
+    silk.rotation.x = -Math.PI/2;
+    silk.position.y = BOARD_T/2 + 0.0006;
+    pcbDetailGroup.add(silk);
+  }
+
+  const box = new THREE.Box3().setFromObject(pcbGroup);
+  const size = box.getSize(new THREE.Vector3());
+  const maxDim = Math.max(size.x, size.z);
+  const fovRad = pcbCam.fov * Math.PI / 180;
+  const dist = (maxDim/2) / Math.tan(fovRad/2) * 1.6;
+  pcbCam.position.set(0, maxDim*0.7, dist);
+  pcbControls.target.set(0, 0, 0);
+  pcbControls.minDistance = maxDim * 0.5;
+  pcbControls.maxDistance = maxDim * 6;
+  pcbControls.update();
+
+  const nets = new Set();
+  b.copperTracks.forEach(tr => tr.net && nets.add(tr.net));
+  b.components.forEach(c => c.pads.forEach(p => p.net && nets.add(p.net)));
+  document.getElementById('hud-board').textContent =
+    `${(bbox.width*0.0254).toFixed(1)} × ${(bbox.height*0.0254).toFixed(1)} mm`;
+  document.getElementById('s-comp').textContent = b.components.length;
+  document.getElementById('s-tracks').textContent = b.copperTracks.length;
+  document.getElementById('s-nets').textContent = nets.size;
+  document.getElementById('s-layers').textContent = b.layerIds.length;
+  document.getElementById('pcb-stats').style.display = 'grid';
+
+  markDirty('pcb');
+}
+
+function applyPcbState(){
+  if (pcbTopCopper) pcbTopCopper.visible = pcbState.showTop;
+  if (pcbBotCopper) pcbBotCopper.visible = pcbState.showBottom;
+  if (pcbPadInstanced) pcbPadInstanced.visible = pcbState.mode !== 'architecture';
+  if (pcbBodyInstanced){
+    pcbBodyInstanced.visible = pcbState.showComponents && pcbState.mode !== 'copper';
+    pcbBodyInstanced.material.transparent = pcbState.mode === 'architecture';
+    pcbBodyInstanced.material.opacity = pcbState.mode === 'architecture' ? 0.4 : 1;
+    pcbBodyInstanced.material.color.setHex(pcbState.mode === 'architecture' ? 0x1a1a1a : 0x0d0d0f);
+    pcbBodyInstanced.material.needsUpdate = true;
+  }
+  if (pcbDetailGroup){
+    pcbDetailGroup.visible = pcbState.mode !== 'copper' || pcbState.revealed;
+  }
+  if (pcbSubstrate?.material){
+    pcbSubstrate.material.color.setHex(pcbState.revealed ? 0x04120a : 0x0a1f12);
+    if ('emissive' in pcbSubstrate.material){
+      pcbSubstrate.material.emissive.setHex(pcbState.revealed ? 0x0a3016 : 0x000000);
+    }
+  }
+  markDirty('pcb');
+}
+
+/* ================================================================
+   6. EMBEDDED PCB DATA (kept identical to previous version)
+   ================================================================ */
+const PHEONIX_PCB = {
+  bbox: { x: 2125.9843, y: 1220.4724, width: 3228.3465, height: 6102.3622 },
+  comps: [
+    ["BQ25792", 2814.9606, 6265.7480, [
+      2740.1575,6202.7559,23.6,7.9,"LED1-K","1", 2740.1575,6218.5039,23.6,7.9,"USBC_POW","2",
+      2740.1575,6250.0000,23.6,7.9,"BTST1","4", 2740.1575,6265.7480,23.6,7.9,"REGN","5",
+      2740.1575,6281.4961,23.6,7.9,"CHRG_D+","6", 2740.1575,6297.2441,23.6,7.9,"CHRG_D-","7",
+      2740.1575,6312.9921,23.6,7.9,"USBC_POW","8", 2775.5906,6340.5512,7.9,23.6,"GND","10",
+      2791.3386,6340.5512,7.9,23.6,"GND","11", 2822.8346,6340.5512,7.9,23.6,"CE","13",
+      2838.5827,6340.5512,7.9,23.6,"SCL_PWR","14", 2854.3307,6340.5512,7.9,23.6,"SDA_PWR","15",
+      2887.7953,6312.9921,27.6,7.9,"ILIM_HIZ","17", 2888.7795,6297.2441,25.6,7.9,"BATP","18",
+      2888.2874,6281.4961,26.8,7.9,"BTST2","19", 2889.7638,6265.7480,23.6,7.9,"PROG","20",
+      2889.7638,6250.0000,23.6,7.9,"BQ_INT","21", 2889.7638,6234.2520,23.6,7.9,"BAT+","22",
+      2889.7638,6218.5039,23.6,7.9,"BAT+","23", 2888.2874,6202.7559,5.9,5.9,"SDRV","24",
+      2850.3937,6198.8189,7.9,39.4,"SYS","25", 2832.6772,6198.8189,7.9,39.4,"SW2","26",
+      2814.9606,6198.8189,7.9,39.4,"GND","27", 2797.2441,6198.8189,7.9,39.4,"SW1","28",
+      2779.5276,6197.8346,7.9,37.4,"PMID","29"
+    ]],
+    ["TPS65023", 3070.8661, 5059.0551, [
+      2974.4094,4988.1889,7.9,23.6,"VINDCDC1","1", 2974.4094,5003.9370,7.9,23.6,"VINDCDC2","2",
+      2974.4094,5019.6850,7.9,23.6,"VINDCDC3","3", 2974.4094,5035.4331,7.9,23.6,"VDCDC1","4",
+      2974.4094,5051.1811,7.9,23.6,"VDCDC2","5", 2974.4094,5066.9291,7.9,23.6,"VDCDC3","6",
+      2974.4094,5082.6772,7.9,23.6,"L1","7", 2974.4094,5098.4252,7.9,23.6,"L2","8",
+      2974.4094,5114.1732,7.9,23.6,"L3","9", 2974.4094,5129.9213,7.9,23.6,"VCC","10",
+      3000.0000,5155.5118,7.9,23.6,"VDCDC2","11", 3015.7480,5155.5118,7.9,23.6,"VINDCDC2","12",
+      3031.4961,5155.5118,7.9,23.6,"VDCDC3","13", 3047.2441,5155.5118,7.9,23.6,"VINDCDC3","14",
+      3062.9921,5155.5118,7.9,23.6,"VDCDC1","15", 3078.7402,5155.5118,7.9,23.6,"VINDCDC1","16",
+      3094.4882,5155.5118,7.9,23.6,"DEFDCDC1","17", 3110.2363,5155.5118,7.9,23.6,"PWRFAIL_SNS","18",
+      3125.9843,5155.5118,7.9,23.6,"LOWBAT_SNS","19", 3141.7323,5155.5118,7.9,23.6,"GND","20",
+      3167.3228,5129.9213,7.9,23.6,"PWRFAIL","21", 3167.3228,5114.1732,7.9,23.6,"PWRFAIL_Q","22",
+      3167.3228,5098.4252,7.9,23.6,"SYS","23", 3167.3228,5082.6772,7.9,23.6,"SYS","24",
+      3167.3228,5066.9291,7.9,23.6,"DEFDCDC1","25", 3167.3228,5051.1811,7.9,23.6,"GND","26",
+      3167.3228,5035.4331,7.9,23.6,"VCC","27", 3167.3228,5019.6850,7.9,23.6,"RESPWRON","28",
+      3167.3228,5003.9370,7.9,23.6,"LOWBAT","29", 3167.3228,4988.1889,7.9,23.6,"TPS_INT","30",
+      3141.7323,4962.5984,7.9,23.6,"DCDC1_DIV","31", 3125.9843,4962.5984,7.9,23.6,"PWRFAIL_SNS","32",
+      3110.2363,4962.5984,7.9,23.6,"LOWBAT_SNS","33", 3094.4882,4962.5984,7.9,23.6,"GND","34",
+      3078.7402,4962.5984,7.9,23.6,"DEFDCDC1","35", 3062.9921,4962.5984,7.9,23.6,"VDCDC1","36",
+      3047.2441,4962.5984,7.9,23.6,"VDCDC2","37", 3031.4961,4962.5984,7.9,23.6,"VDCDC3","38",
+      3015.7480,4962.5984,7.9,23.6,"VCC","39", 3000.0000,4962.5984,7.9,23.6,"5V","40"
+    ]],
+    ["TLV320AIC3204", 3070.8661, 5935.6299, [
+      3001.9685,6031.4961,33.1,10.6,"MCLK","1", 3021.6535,6031.4961,33.1,10.6,"BCLK","2",
+      3041.3386,6031.4961,33.1,10.6,"WCLK","3", 3061.0236,6031.4961,33.1,10.6,"SDATA","4",
+      3080.7087,6031.4961,33.1,10.6,"MIC_D","5", 3100.3937,6031.4961,33.1,10.6,"3V3B","6",
+      3120.0787,6031.4961,33.1,10.6,"GND","7", 3139.7638,6031.4961,33.1,10.6,"JACK_MIC","8",
+      3166.7323,6004.5276,10.6,33.1,"AUD_SCL","9", 3166.7323,5984.8425,10.6,33.1,"AUD_SDA","10",
+      3166.7323,5945.4724,10.6,33.1,"GND","12", 3166.7323,5925.7874,10.6,33.1,"IN1_L","13",
+      3166.7323,5906.1024,10.6,33.1,"IN1_R","14", 3139.7638,5839.7638,33.1,10.6,"GND","17",
+      3120.0787,5839.7638,33.1,10.6,"REF","18", 3100.3937,5839.7638,33.1,10.6,"MICBIAS","19",
+      3061.0236,5839.7638,33.1,10.6,"IN3_R","21", 3041.3386,5839.7638,33.1,10.6,"AMP_L","22",
+      3021.6535,5839.7638,33.1,10.6,"AMP_R","23", 3001.9685,5839.7638,33.1,10.6,"1V8","24",
+      2975.0000,5866.7323,10.6,33.1,"HPL","25", 2975.0000,5886.4173,10.6,33.1,"3V3B","26",
+      2975.0000,5906.1024,10.6,33.1,"HPR","27", 2975.0000,5925.7874,10.6,33.1,"GND","28",
+      2975.0000,5945.4724,10.6,33.1,"1V8","29", 2975.0000,5965.1575,10.6,33.1,"3V3B","30",
+      2975.0000,5984.8425,10.6,33.1,"AUD_RST","31"
+    ]],
+    ["MP3429", 2893.7008, 4625.9843, [
+      2868.1103,4625.9843,91.0,12.0,"SW","1", 2854.3307,4700.7874,10.0,32.0,"VDD","2",
+      2874.0158,4700.7874,10.0,32.0,"SS","3", 2893.7008,4700.7874,10.0,32.0,"COMP","4",
+      2913.3858,4700.7874,10.0,32.0,"FB","5", 2933.0709,4700.7874,10.0,32.0,"AGND","6",
+      2919.2913,4649.6063,91.0,12.0,"GND","7", 2919.2913,4602.3622,91.0,12.0,"5V","8",
+      2933.0709,4551.1811,32.0,10.0,"AGND","9", 2913.3858,4551.1811,32.0,10.0,"SYS","10",
+      2893.7008,4551.1811,32.0,10.0,"SYS","11", 2874.0158,4551.1811,32.0,10.0,"SYS","12",
+      2854.3307,4551.1811,32.0,10.0,"BST","13"
+    ]],
+    ["HD3SS460", 4204.7244, 7031.4961, [
+      4139.7638,6942.9133,23.6,9.8,"RX1+","1", 4139.7638,6962.5983,23.6,9.8,"RX1-","2",
+      4139.7638,6982.2835,23.6,9.8,"MUX_POL","3", 4139.7638,7001.9685,23.6,9.8,"TX1+","4",
+      4139.7638,7021.6535,23.6,9.8,"TX1-","5", 4139.7638,7041.3386,23.6,9.8,"TX1+","6",
+      4139.7638,7061.0235,23.6,9.8,"TX1-","7", 4139.7638,7080.7087,23.6,9.8,"AMSEL","8",
+      4139.7638,7100.3937,23.6,9.8,"RX1+","9", 4139.7638,7120.0788,23.6,9.8,"RX1-","10",
+      4269.6850,7080.7087,23.6,9.8,"EN","17", 4269.6850,6982.2835,23.6,9.8,"3V3B","22",
+      4234.2520,6927.1654,23.6,9.8,"SSTX2+","25", 4214.5670,6927.1654,23.6,9.8,"SSTX2-","26",
+      4194.8819,6927.1654,23.6,9.8,"SSTR2-","27", 4175.1969,6927.1654,23.6,9.8,"SSTR2+","28",
+      4204.7244,7031.4961,78.7,157.5,"GND","29"
+    ]],
+    ["TS3USB221", 4185.0394, 7216.5354, [
+      4156.4016,7187.0078,11.8,27.7,"SYS_D+","1", 4156.4016,7206.6929,9.8,27.7,"SYS_D-","2",
+      4156.4016,7226.3780,9.8,27.7,"CHRG_D+","3", 4156.4016,7246.0630,11.8,27.7,"CHRG_D-","4",
+      4185.0394,7254.0332,13.8,29.7,"GND","5", 4213.6772,7246.0630,11.8,27.7,"GND","6",
+      4213.6772,7226.3780,9.8,27.7,"D-","7", 4213.6772,7206.6929,9.8,27.7,"D+","8",
+      4213.6772,7187.0078,11.8,27.7,"USB_SW","9", 4185.0394,7179.0376,13.8,29.7,"3V3B","10"
+    ]],
+    ["TUSB321", 4074.8031, 6988.1890, [
+      4049.2126,6980.3150,27.6,7.9,"CC1","1", 4049.2126,6996.0630,27.6,7.9,"CC2","2",
+      4100.3937,6996.0630,27.6,7.9,"OUT1","7", 4100.3937,6980.3150,27.6,7.9,"OUT2","8",
+      4082.6772,6958.6614,7.9,19.7,"GND","10", 4066.9291,6958.6614,7.9,19.7,"MUX_POL","11",
+      4051.1811,6958.6614,7.9,19.7,"5V","12"
+    ]],
+    ["FH72-DISP", 2665.3543, 5329.5276, [
+      2842.5197,5393.7008,13.8,25.2,"GND","1", 2830.7087,5266.1417,13.8,26.8,"22V","2",
+      2807.0866,5266.1417,13.8,26.8,"GND","4", 2795.2756,5393.7008,13.8,25.2,"DSI_D0_N","5",
+      2783.4646,5266.1417,13.8,26.8,"DSI_D0_P","6", 2771.6535,5393.7008,13.8,25.2,"GND","7",
+      2759.8425,5266.1417,13.8,26.8,"DSI_D1_N","8", 2748.0315,5393.7008,13.8,25.2,"DSI_D1_P","9",
+      2724.4094,5393.7008,13.8,25.2,"DSI_C_N","11", 2712.5984,5266.1417,13.8,26.8,"DSI_C_P","12",
+      2677.1654,5393.7008,13.8,25.2,"DSI_D2_P","15", 2653.5433,5393.7008,13.8,25.2,"DSI_D3_N","17",
+      2641.7323,5266.1417,13.8,26.8,"DSI_D3_P","18", 2559.0551,5393.7008,13.8,25.2,"1V8","25",
+      2547.2441,5266.1417,13.8,26.8,"DIS_SDA","26", 2535.4331,5393.7008,13.8,25.2,"DIS_SCL","27",
+      2500.0000,5266.1417,13.8,26.8,"3V3B","30", 2488.1890,5393.7008,13.8,25.2,"BKL-","31"
+    ]],
+    ["USBC-24P", 3740.1575, 7261.8110, [
+      3636.8110,7116.5354,11.8,35.4,"GND","A1", 3656.4961,7116.5354,11.8,35.4,"TX1+","A2",
+      3676.1811,7116.5354,11.8,35.4,"TX1-","A3", 3695.8661,7116.5354,11.8,35.4,"USBC_POW","A4",
+      3715.5512,7116.5354,11.8,35.4,"CC1","A5", 3735.2362,7116.5354,11.8,35.4,"D+","A6",
+      3754.9213,7116.5354,11.8,35.4,"D-","A7", 3794.2913,7116.5354,11.8,35.4,"USBC_POW","A9",
+      3813.9764,7116.5354,11.8,35.4,"RX1-","A10", 3833.6614,7116.5354,11.8,35.4,"RX1+","A11",
+      3853.3465,7116.5354,11.8,35.4,"GND","A12", 3843.5039,7159.8425,11.8,35.4,"GND","B1",
+      3823.8189,7159.8425,11.8,35.4,"TX1+","B2", 3804.1339,7159.8425,11.8,35.4,"TX1-","B3",
+      3784.4488,7159.8425,11.8,35.4,"USBC_POW","B4", 3764.7638,7159.8425,11.8,35.4,"CC2","B5",
+      3745.0787,7159.8425,11.8,35.4,"D+","B6", 3725.3937,7159.8425,11.8,35.4,"D-","B7",
+      3686.0236,7159.8425,11.8,35.4,"USBC_POW","B9", 3666.3386,7159.8425,11.8,35.4,"RX1-","B10",
+      3646.6535,7159.8425,11.8,35.4,"RX1+","B11", 3626.9685,7159.8425,11.8,35.4,"GND","B12"
+    ]],
+    ["SJ2-JACK", 2637.7953, 7086.6142, [
+      2773.6220,7238.1890,59.1,78.7,"GND","1", 2496.0630,6958.6614,59.1,63.0,"JACK_R","2",
+      2779.5276,7106.2992,59.1,63.0,"JACK_L","3", 2501.9685,7238.1890,59.1,78.7,"JACK_MIC","4",
+      2496.0630,6870.0787,59.1,63.0,"JACK-IN","10"
+    ]],
+    ["FPC15-CAM", 4822.8346, 3090.5512, [
+      5098.6346,3185.2512,12.0,43.0,"GND","1", 5059.2346,3185.2512,12.0,43.0,"CAM_D0_N","2",
+      5019.8346,3185.2512,12.0,43.0,"CAM_D0_P","3", 4980.4346,3185.2512,12.0,43.0,"GND","4",
+      4941.0346,3185.2512,12.0,43.0,"CAM_D1_N","5", 4901.6346,3185.2512,12.0,43.0,"CAM_D1_P","6",
+      4822.8346,3185.2512,12.0,43.0,"CAM_CK_N","8", 4783.4346,3185.2512,12.0,43.0,"CAM_CK_P","9",
+      4744.0346,3185.2512,12.0,43.0,"GND","10", 4704.6346,3185.2512,12.0,43.0,"CAM_IO0","11",
+      4625.8346,3185.2512,12.0,43.0,"CAM_SCL","13", 4586.4346,3185.2512,12.0,43.0,"CAM_SDA","14",
+      4547.0346,3185.2512,12.0,43.0,"CAM_SW","15"
+    ]],
+    ["EG25GGC", 4527.5591, 2283.4646, [
+      3907.4803,1787.4016,98.4,31.5,"WAKEUP_IN","1", 3907.4803,1838.5827,98.4,31.5,"AP_READY","2",
+      3907.4803,1889.7638,98.4,31.5,"RESERVED1","3", 3907.4803,1940.9449,98.4,31.5,"W_DISABLE","4",
+      3907.4803,1992.1260,98.4,31.5,"NET_MODE","5", 3907.4803,2043.3071,98.4,31.5,"NET_STATUS","6",
+      3907.4803,2094.4882,98.4,31.5,"VDD_EXT","7", 3907.4803,2267.7165,98.4,31.5,"GND","8",
+      3907.4803,2318.8976,98.4,31.5,"GND","9", 3907.4803,2370.0787,98.4,31.5,"USIM_GND","10",
+      3907.4803,2421.2598,98.4,31.5,"DBG_RXD","11", 3907.4803,2472.4409,98.4,31.5,"DBG_TXD","12",
+      3907.4803,2523.6220,98.4,31.5,"USIM_PRES","13", 3907.4803,2574.8031,98.4,31.5,"USIM_VDD","14",
+      3907.4803,2625.9843,98.4,31.5,"USIM_DATA","15", 3907.4803,2677.1654,98.4,31.5,"USIM_CLK","16",
+      3907.4803,2728.3465,98.4,31.5,"USIM_RST","17", 3907.4803,2779.5276,98.4,31.5,"RESERVED2","18",
+      4151.5748,2844.4882,31.5,98.4,"GND","19", 4202.7559,2844.4882,31.5,98.4,"RESET_N","20",
+      4253.9370,2844.4882,31.5,98.4,"PWRKEY","21", 4305.1181,2844.4882,31.5,98.4,"GND","22",
+      4356.2992,2844.4882,31.5,98.4,"SD_INS_DET","23", 4407.4803,2844.4882,31.5,98.4,"PCM_IN","24",
+      4458.6614,2844.4882,31.5,98.4,"PCM_OUT","25", 4509.8425,2844.4882,31.5,98.4,"PCM_SYNC","26",
+      4561.0236,2844.4882,31.5,98.4,"PCM_CLK","27", 4612.2047,2844.4882,31.5,98.4,"SDC2_D3","28",
+      4663.3858,2844.4882,31.5,98.4,"SDC2_D2","29", 4714.5669,2844.4882,31.5,98.4,"SDC2_D1","30",
+      4765.7480,2844.4882,31.5,98.4,"SDC2_D0","31", 4816.9291,2844.4882,31.5,98.4,"SDC2_CLK","32",
+      4868.1102,2844.4882,31.5,98.4,"SDC2_CMD","33", 4919.2913,2844.4882,31.5,98.4,"VDD_SDIO","34",
+      4970.4724,2844.4882,31.5,98.4,"ANT_DIV","35", 5021.6535,2844.4882,31.5,98.4,"GND","36"
+    ]],
+    ["SIM-G85D", 3228.3465, 3228.3465, [
+      3496.0630,3103.3465,35.4,47.2,"SIM_VCC","C1", 3496.0630,3203.3465,35.4,47.2,"SIM_RST","C2",
+      3496.0630,3303.3465,35.4,47.2,"SIM_CLK","C3", 3496.0630,3153.3465,35.4,47.2,"GND","C5",
+      3496.0630,3253.3465,35.4,47.2,"SIM_VPP","C6", 3496.0630,3353.3465,35.4,47.2,"SIM_IO","C7"
+    ]],
+    ["FINGER-10P", 3740.1575, 3562.9921, [
+      3651.5748,3489.2091,12.0,32.0,"GND","1", 3671.2599,3489.2091,12.0,32.0,"SPI_CLK","2",
+      3690.9449,3489.2091,12.0,32.0,"SPI_MISO","3", 3710.6299,3489.2091,12.0,32.0,"SPI_MOSI","4",
+      3730.3150,3489.2091,12.0,32.0,"SPI_CS","5", 3750.0000,3489.2091,12.0,32.0,"SPI_RDY","6",
+      3769.6851,3489.2091,12.0,32.0,"VCC","7", 3789.3701,3489.2091,12.0,32.0,"NET_J3_8","8"
+    ]],
+    ["SPH0645", 3350.3937, 7273.7008, [
+      3314.9606,7192.0472,23.6,20.6,"WCLK","1", 3314.9606,7224.4094,23.6,20.6,"GND","2",
+      3375.9843,7272.9134,3.9,3.9,"GND","3", 3385.8268,7224.4094,23.6,20.6,"BCLK","4",
+      3385.8268,7192.0472,23.6,20.6,"MIC_SW","5", 3350.3937,7192.0472,23.6,20.6,"MIC_DO","6"
+    ]],
+    ["SPEAKER", 4625.9843, 7160.4331, [
+      4891.7323,7239.1732,66.9,98.4,"SPK_N","N", 4360.2362,7239.1732,66.9,98.4,"SPK_P","P"
+    ]],
+    ["VIBRATOR", 2730.3150, 4035.4331, [
+      2730.3150,3988.1890,118.1,66.9,"Q3-D","N", 2730.3150,4082.6772,118.1,66.9,"VCC","P"
+    ]],
+    ["BAT-CONN", 3050.0000, 6439.1732, [
+      3034.7638,6819.1732,137.8,78.7,"BAT1-","1", 3194.7638,6819.1732,137.8,78.7,"BAT1+","2",
+      3034.7638,6439.1732,196.9,78.7,"U9-OUT+","3", 3194.7638,6439.1732,196.9,78.7,"GND","4"
+    ]],
+    ["SW-PRIV", 2306.0787, 6653.5433, [
+      2306.0787,6653.5433,54.0,54.0,"3V3B","1", 2306.0787,6732.2834,54.0,54.0,"Q2-G","2",
+      2306.0787,6811.0236,54.0,54.0,"NC","3"
+    ]],
+    ["SW-PRIV", 2306.0787, 6259.8425, [
+      2306.0787,6259.8425,54.0,54.0,"1V8","1", 2306.0787,6338.5826,54.0,54.0,"MICSW","2",
+      2306.0787,6417.3228,54.0,54.0,"NC","3"
+    ]],
+    ["SW-PRIV", 2306.0787, 5866.1417, [
+      2306.0787,5866.1417,54.0,54.0,"EN3V3A","1", 2306.0787,5944.8819,54.0,54.0,"EN3V3A_O","2",
+      2306.0787,6023.6220,54.0,54.0,"NC","3"
+    ]],
+    ["SW-VOL+", 2204.7244, 1948.8189, [
+      2239.7244,1866.1418,35.0,50.0,"VCC","1", 2239.7244,2031.4960,35.0,50.0,"GPIO3","2"
+    ]],
+    ["SW-VOL-", 2204.7244, 2362.2047, [
+      2239.7244,2279.5276,35.0,50.0,"VCC","1", 2239.7244,2444.8818,35.0,50.0,"GPIO4","2"
+    ]],
+    ["SW-PROG", 2204.7244, 3385.8268, [
+      2239.7244,3303.1497,35.0,50.0,"VCC","1", 2239.7244,3468.5039,35.0,50.0,"GPIO17","2"
+    ]],
+    ["SW-POW", 5275.5906, 3267.7165, [
+      5240.5906,3350.3936,35.0,50.0,"VCC","1", 5240.5906,3185.0394,35.0,50.0,"GPIO2","2"
+    ]],
+    ["SOT23-Q2", 3019.2913, 3997.0472, [
+      2981.1024,3971.4567,39.0,19.7,"Q2-G","1", 2981.1024,4022.6378,39.0,19.7,"CAMSW","2",
+      3057.4803,3997.0472,39.0,19.7,"3V3B","3"
+    ]],
+    ["SOT23-Q3", 2724.0157, 4312.0079, [
+      2685.8268,4286.4173,39.0,19.7,"Q3-G","1", 2685.8268,4337.5984,39.0,19.7,"Q3-D","2",
+      2762.2047,4312.0079,39.0,19.7,"GND","3"
+    ]],
+    ["SOT23-Q4", 4614.3701, 1312.9921, [
+      4576.1811,1287.4016,39.0,19.7,"Q4-G","1", 4576.1811,1338.5827,39.0,19.7,"Q4-D","2",
+      4652.5591,1312.9921,39.0,19.7,"GND","3"
+    ]],
+    ["0603-R40", 2913.3858, 4822.8346, [2884.8425,4822.8346,25.6,35.4,"C63_PAD2","1", 2941.9291,4822.8346,25.6,35.4,"AGND","2"]],
+    ["0805-R12", 2505.9055, 6053.1496, [2470.4724,6053.1496,27.6,51.2,"ILIM_HIZ","1", 2541.3386,6053.1496,27.6,51.2,"GND","2"]],
+    ["0603-R31", 2707.2441, 4984.0551, [2678.7008,4984.0551,25.6,35.4,"3V3B","1", 2735.7874,4984.0551,25.6,35.4,"TPS_INT","2"]],
+    ["0805-R24", 2555.1181, 6196.8504, [2590.5512,6196.8504,27.6,51.2,"REGN","1", 2519.6850,6196.8504,27.6,51.2,"TS","2"]],
+    ["0805-R28", 2555.1181, 6338.5827, [2519.6850,6338.5827,27.6,51.2,"TS","1", 2590.5512,6338.5827,27.6,51.2,"GND","2"]],
+    ["0805-R27", 2555.1181, 6267.7165, [2519.6850,6267.7165,27.6,51.2,"TS","1", 2590.5512,6267.7165,27.6,51.2,"GND","2"]],
+    ["0805-R7", 2505.9055, 6124.0157, [2470.4724,6124.0157,27.6,51.2,"ILIM_HIZ","1", 2541.3386,6124.0157,27.6,51.2,"REGN","2"]],
+    ["0805-R10", 3031.4961, 6200.7874, [3031.4961,6236.2205,27.6,51.2,"GND","1", 3031.4961,6165.3543,27.6,51.2,"PROG","2"]],
+    ["0603-R43", 3149.6063, 7192.9134, [3121.0630,7192.9134,25.6,35.4,"EN","1", 3178.1496,7192.9134,25.6,35.4,"3V3B","2"]],
+    ["0603-R9", 3149.6063, 7125.9843, [3121.0630,7125.9843,25.6,35.4,"AMSEL","1", 3178.1496,7125.9843,25.6,35.4,"GND","2"]],
+    ["0603-R8", 3149.6063, 7059.0551, [3121.0630,7059.0551,25.6,35.4,"AMSEL","1", 3178.1496,7059.0551,25.6,35.4,"3V3B","2"]],
+    ["0805-R5", 3346.4567, 7027.5591, [3300.1969,7027.5591,45.3,45.3,"GND","1", 3392.7165,7027.5591,45.3,45.3,"MIC_DO","2"]],
+    ["0603-R33", 3149.6063, 3937.0079, [3121.0630,3937.0079,25.6,35.4,"RESPWRON","1", 3178.1496,3937.0079,25.6,35.4,"3V3B","2"]],
+    ["0603-R34", 2854.3307, 4251.9685, [2825.7874,4251.9685,25.6,35.4,"DCDC1_DIV","1", 2882.8740,4251.9685,25.6,35.4,"DEFDCDC1","2"]],
+    ["0603-R35", 3051.1811, 4330.7087, [3022.6378,4330.7087,25.6,35.4,"GND","1", 3079.7244,4330.7087,25.6,35.4,"DEFDCDC1","2"]],
+    ["0603-R29", 2645.6693, 5866.1417, [2674.2126,5866.1417,25.6,35.4,"LED1-A","1", 2617.1260,5866.1417,25.6,35.4,"REGN","2"]],
+    ["0603-R25", 2645.6693, 5925.1969, [2645.6693,5973.4252,25.6,35.4,"LED1-K","1", 2645.6693,5925.1969,25.6,35.4,"3V3B","2"]],
+    ["0603-R30", 3110.2362, 6200.7874, [3110.2362,6172.2441,25.6,35.4,"3V3B","1", 3110.2362,6229.3307,25.6,35.4,"BQ_INT","2"]],
+    ["0603-R32", 2707.2441, 5080.5118, [2678.7008,5080.5118,25.6,35.4,"3V3B","1", 2735.7874,5080.5118,25.6,35.4,"PWRFAIL","2"]],
+    ["0603-R38", 2913.3858, 4901.5748, [2884.8425,4901.5748,25.6,35.4,"5V","1", 2941.9291,4901.5748,25.6,35.4,"FB","2"]],
+    ["0603-R39", 2578.7402, 4980.3150, [2550.1969,4980.3150,25.6,35.4,"FB","1", 2607.2835,4980.3150,25.6,35.4,"AGND","2"]],
+    ["0603-R21", 2578.7402, 4547.2441, [2550.1969,4547.2441,25.6,35.4,"GND","1", 2607.2835,4547.2441,25.6,35.4,"PWRFAIL_SNS","2"]],
+    ["0603-R26", 2637.7953, 4763.7795, [2609.2520,4763.7795,25.6,35.4,"GND","1", 2666.3386,4763.7795,25.6,35.4,"LOWBAT_SNS","2"]],
+    ["0603-R18", 2578.7402, 4350.3937, [2550.1969,4350.3937,25.6,35.4,"VCC","1", 2607.2835,4350.3937,25.6,35.4,"LOWBAT","2"]],
+    ["0603-R19", 2362.2047, 3956.6929, [2333.6614,3956.6929,25.6,35.4,"PWRFAIL_SNS","1", 2390.7480,3956.6929,25.6,35.4,"SYS","2"]],
+    ["0603-R22", 2598.4252, 4625.9843, [2569.8819,4625.9843,25.6,35.4,"LOWBAT_SNS","1", 2626.9685,4625.9843,25.6,35.4,"SYS","2"]],
+    ["0603-R37", 2736.2205, 4645.6693, [2707.6772,4645.6693,25.6,35.4,"BKL-","1", 2764.7638,4645.6693,25.6,35.4,"GND","2"]],
+    ["0603-R13", 3228.3465, 6169.2913, [3228.3465,6140.7480,25.6,35.4,"BATP","1", 3228.3465,6197.8346,25.6,35.4,"BAT+","2"]],
+    ["0805-R2", 2637.7953, 3415.3543, [2637.7953,3369.0945,45.3,45.3,"VCC","1", 2637.7953,3461.6142,45.3,45.3,"NET_J3_8","2"]],
+    ["1206-R41", 3051.1811, 5216.5354, [3004.9213,5216.5354,45.3,45.3,"GPIO27","1", 3097.4409,5216.5354,45.3,45.3,"Q3-G","2"]],
+    ["0805-R42", 4613.1890, 1417.3228, [4566.9291,1417.3228,45.3,45.3,"GPIO22","1", 4659.4488,1417.3228,45.3,45.3,"Q4-G","2"]],
+    ["0603-C48", 2879.9213, 5974.4094, [2851.3780,5974.4094,25.6,35.4,"SYS","1", 2908.4646,5974.4094,25.6,35.4,"GND","2"]],
+    ["0603-C36", 2224.4094, 4598.2283, [2195.8661,4598.2283,25.6,35.4,"DCDC1_DIV","1", 2252.9528,4598.2283,25.6,35.4,"GND","2"]],
+    ["0603-C34", 2224.4094, 4405.3150, [2195.8661,4405.3150,25.6,35.4,"VINDCDC2","1", 2252.9528,4405.3150,25.6,35.4,"GND","2"]],
+    ["0603-C35", 2224.4094, 4501.7717, [2195.8661,4501.7717,25.6,35.4,"VINDCDC3","1", 2252.9528,4501.7717,25.6,35.4,"GND","2"]],
+    ["0603-C33", 2224.4094, 4308.8583, [2195.8661,4308.8583,25.6,35.4,"VINDCDC1","1", 2252.9528,4308.8583,25.6,35.4,"GND","2"]],
+    ["0603-C32", 2224.4094, 4212.4016, [2195.8661,4212.4016,25.6,35.4,"VCC","1", 2252.9528,4212.4016,25.6,35.4,"GND","2"]],
+    ["0603-C51", 2385.3543, 4501.7717, [2356.8110,4501.7717,25.6,35.4,"VDCDC1","1", 2413.8976,4501.7717,25.6,35.4,"GND","2"]],
+    ["0603-C52", 2385.3543, 4598.2283, [2356.8110,4598.2283,25.6,35.4,"GND","1", 2413.8976,4598.2283,25.6,35.4,"TP5_A","2"]],
+    ["0603-C53", 2385.3543, 4694.6850, [2356.8110,4694.6850,25.6,35.4,"22V","1", 2413.8976,4694.6850,25.6,35.4,"GND","2"]],
+    ["0603-C54", 2385.3543, 4791.1417, [2356.8110,4791.1417,25.6,35.4,"SYS","1", 2413.8976,4791.1417,25.6,35.4,"GND","2"]],
+    ["0603-C55", 2385.3543, 4887.5984, [2356.8110,4887.5984,25.6,35.4,"BST","1", 2413.8976,4887.5984,25.6,35.4,"SW","2"]],
+    ["0603-C56", 2385.3543, 4984.0551, [2356.8110,4984.0551,25.6,35.4,"SYS","1", 2413.8976,4984.0551,25.6,35.4,"GND","2"]],
+    ["0603-C57", 2385.3543, 5080.5118, [2356.8110,5080.5118,25.6,35.4,"SYS","1", 2413.8976,5080.5118,25.6,35.4,"GND","2"]],
+    ["0603-C58", 2500.0000, 4251.9685, [2471.4567,4251.9685,25.6,35.4,"SYS","1", 2528.5433,4251.9685,25.6,35.4,"GND","2"]],
+    ["0603-C59", 2460.6299, 4389.7638, [2432.0866,4389.7638,25.6,35.4,"5V","1", 2489.1732,4389.7638,25.6,35.4,"GND","2"]],
+    ["0603-C60", 2362.2047, 4232.2835, [2333.6614,4232.2835,25.6,35.4,"5V","1", 2390.7480,4232.2835,25.6,35.4,"GND","2"]],
+    ["0603-C61", 2342.5197, 4389.7638, [2313.9764,4389.7638,25.6,35.4,"5V","1", 2371.0630,4389.7638,25.6,35.4,"GND","2"]],
+    ["0603-C62", 2500.0000, 4468.5039, [2471.4567,4468.5039,25.6,35.4,"5V","1", 2528.5433,4468.5039,25.6,35.4,"GND","2"]],
+    ["0603-C63", 2546.2992, 4694.6850, [2517.7559,4694.6850,25.6,35.4,"COMP","1", 2574.8425,4694.6850,25.6,35.4,"C63_PAD2","2"]],
+    ["0603-C64", 2519.6850, 4763.7795, [2491.1417,4763.7795,25.6,35.4,"GND","1", 2548.2283,4763.7795,25.6,35.4,"VDD","2"]],
+    ["0603-C65", 2546.2992, 4887.5984, [2517.7559,4887.5984,25.6,35.4,"SS","1", 2574.8425,4887.5984,25.6,35.4,"AGND","2"]],
+    ["0603-C66", 3149.6063, 6992.1260, [3121.0630,6992.1260,25.6,35.4,"3V3B","1", 3178.1496,6992.1260,25.6,35.4,"GND","2"]],
+    ["0603-C50", 2879.9213, 5864.1732, [2851.3780,5864.1732,25.6,35.4,"SYS","1", 2908.4646,5864.1732,25.6,35.4,"GND","2"]],
+    ["0603-C49", 2879.9213, 5919.2913, [2851.3780,5919.2913,25.6,35.4,"SYS","1", 2908.4646,5919.2913,25.6,35.4,"GND","2"]],
+    ["0603-C45", 2879.9213, 6139.7638, [2851.3780,6139.7638,25.6,35.4,"SYS","1", 2908.4646,6139.7638,25.6,35.4,"GND","2"]],
+    ["0603-C46", 2879.9213, 6084.6457, [2851.3780,6084.6457,25.6,35.4,"SYS","1", 2908.4646,6084.6457,25.6,35.4,"GND","2"]],
+    ["0603-C47", 2879.9213, 6029.5276, [2851.3780,6029.5276,25.6,35.4,"SYS","1", 2908.4646,6029.5276,25.6,35.4,"GND","2"]],
+    ["0603-C30", 2911.4173, 5606.2992, [2882.8740,5606.2992,25.6,35.4,"BAT+","1", 2939.9606,5606.2992,25.6,35.4,"GND","2"]],
+    ["0603-C29", 2911.4173, 5547.2441, [2882.8740,5547.2441,25.6,35.4,"BAT+","1", 2939.9606,5547.2441,25.6,35.4,"GND","2"]],
+    ["0603-C37", 2645.6693, 5811.0236, [2617.1260,5811.0236,25.6,35.4,"REGN","1", 2674.2126,5811.0236,25.6,35.4,"GND","2"]],
+    ["0603-C38", 2775.5906, 5933.0709, [2804.1339,5933.0709,25.6,35.4,"PMID","1", 2747.0472,5933.0709,25.6,35.4,"GND","2"]],
+    ["0603-C39", 2775.5906, 5875.9843, [2804.1339,5875.9843,25.6,35.4,"PMID","1", 2747.0472,5875.9843,25.6,35.4,"GND","2"]],
+    ["0603-C40", 2775.5906, 5818.8976, [2804.1339,5818.8976,25.6,35.4,"PMID","1", 2747.0472,5818.8976,25.6,35.4,"GND","2"]],
+    ["0603-C41", 2775.5906, 5761.8110, [2804.1339,5761.8110,25.6,35.4,"PMID","1", 2747.0472,5761.8110,25.6,35.4,"GND","2"]],
+    ["0603-C42", 2636.8110, 6102.3622, [2665.3543,6102.3622,25.6,35.4,"SW1","1", 2608.2677,6102.3622,25.6,35.4,"BTST1","2"]],
+    ["0603-C43", 2385.3543, 4308.8583, [2356.8110,4308.8583,25.6,35.4,"VDCDC2","1", 2413.8976,4308.8583,25.6,35.4,"GND","2"]],
+    ["0603-C44", 2952.7559, 6259.8425, [2952.7559,6288.3858,25.6,35.4,"SW2","1", 2952.7559,6231.2992,25.6,35.4,"BTST2","2"]],
+    ["0402-C31", 2952.7559, 6188.9764, [2933.0709,6188.9764,19.7,23.6,"SDRV","1", 2972.4409,6188.9764,19.7,23.6,"GND","2"]],
+    ["0603-C12", 2440.9449, 6259.8425, [2440.9449,6288.3858,25.6,35.4,"GND","1", 2440.9449,6231.2992,25.6,35.4,"MICSW","2"]],
+    ["0603-C13", 2440.9449, 5944.8819, [2440.9449,5973.4252,25.6,35.4,"MICSW","1", 2440.9449,5916.3386,25.6,35.4,"GND","2"]],
+    ["0603-C66b", 3149.6063, 7263.7795, [3141.6063,7263.7795,6.0,10.0,"USBC_POW","1", 3157.6063,7263.7795,6.0,10.0,"GND","2"]],
+    ["2.2uH-L2", 2716.5354, 4488.1890, [2673.6220,4488.1890,48.8,87.4,"VDCDC2","1", 2759.4488,4488.1890,48.8,87.4,"L2","2"]],
+    ["2.2uH-L4", 2874.0157, 5039.3701, [2831.1024,5039.3701,48.8,87.4,"VDCDC3","1", 2916.9291,5039.3701,48.8,87.4,"L3","2"]],
+    ["3.3uH-L1", 2893.7008, 4389.7638, [2835.6299,4389.7638,51.4,51.4,"DCDC1_DIV","1", 2951.7717,4389.7638,51.4,51.4,"L1","2"]],
+    ["6.8uH-L5", 3105.2362, 4783.2677, [3048.2362,4783.2677,51.0,94.0,"SYS","1", 3162.2362,4783.2677,51.0,94.0,"D1_A","2"]],
+    ["2.2uH-L3", 2653.5433, 6614.1732, [2823.3465,6614.1732,135.4,128.1,"SW2","1", 2483.7402,6614.1732,135.4,128.1,"SW1","2"]],
+    ["1.5uH-L6", 3119.7638, 4402.8150, [3044.2717,4486.5256,159.5,103.7,"SYS","1", 3194.5669,4485.4921,159.5,103.7,"SW","2"]],
+    ["SCHOTTKY-D1", 2559.0551, 5059.0551, [2535.5551,5059.0551,14.0,26.0,"22V","1", 2570.0551,5059.0551,39.0,26.0,"D1_A","2"]],
+    ["DIODE-D2", 3090.5512, 4625.9843, [3021.6535,4625.9843,36.2,44.5,"VCC","1", 3159.4488,4625.9843,36.2,44.5,"Q3_D","2"]],
+    ["ESD-ZD1", 3425.1969, 7110.2362, [3417.1969,7110.2362,6.0,10.0,"USBC_POW","1", 3433.1969,7110.2362,6.0,10.0,"GND","2"]],
+    ["ESD-ZD2", 3149.6063, 7263.7795, [3141.6063,7263.7795,6.0,10.0,"USBC_POW","1", 3157.6063,7263.7795,6.0,10.0,"GND","2"]],
+    ["PTC-F1", 3543.3071, 7027.5591, [3602.3622,6956.6929,39.4,98.4,"U9-OUT+","1", 3484.2520,6956.6929,39.4,98.4,"BAT+","2"]],
+    ["LED1", 2687.4803, 6031.4961, [2655.9843,6031.4961,31.5,31.5,"LED1-K","1", 2718.9764,6031.4961,31.5,31.5,"LED1-A","2"]],
+    ["FLASH-U13", 4770.6693, 1358.2677, [4804.6693,1287.9921,31.1,51.2,"Q4_D","1", 4736.6693,1287.9921,31.1,51.2,"VCC","2"]],
+    ["CM5-Module", 3740.1575, 2333.4646, [
+      2940.9449,1537.0079,7.9,27.6,"GND","1", 3066.9291,1537.0079,7.9,27.6,"FAN_PWM","19",
+      3129.9213,1537.0079,7.9,27.6,"AUD_SDATA","25", 3145.6693,1537.0079,7.9,27.6,"MIC_D","27",
+      3177.1654,1537.0079,7.9,27.6,"AUD_SDA","31", 3192.9134,1537.0079,7.9,27.6,"GND","33",
+      3224.4094,1537.0079,7.9,27.6,"DIS_SCL","37", 3240.1575,1537.0079,7.9,27.6,"SPI_CS","39",
+      3271.6535,1537.0079,7.9,27.6,"GND","43", 3287.4016,1537.0079,7.9,27.6,"AUD_RST","45",
+      3318.8976,1537.0079,7.9,27.6,"BCLK","49", 3334.6457,1537.0079,7.9,27.6,"AUD_SCL","51",
+      3366.1417,1537.0079,7.9,27.6,"LCD_PWM","55", 3539.3701,1537.0079,7.9,27.6,"5V","77",
+      3555.1181,1537.0079,7.9,27.6,"5V","79", 3570.8661,1537.0079,7.9,27.6,"5V","81",
+      3586.6142,1537.0079,7.9,27.6,"5V","83", 3602.3622,1537.0079,7.9,27.6,"5V","85",
+      3618.1102,1537.0079,7.9,27.6,"5V","87",
+      3129.9213,1415.7480,7.9,27.6,"WCLK","26", 3161.4173,1415.7480,7.9,27.6,"DIS_SDA","30",
+      3192.9134,1415.7480,7.9,27.6,"SPI_RDY","34", 3224.4094,1415.7480,7.9,27.6,"SPI_CLK","38",
+      3240.1575,1415.7480,7.9,27.6,"SPI_MISO","40", 3271.6535,1415.7480,7.9,27.6,"SPI_MOSI","44",
+      3287.4016,1415.7480,7.9,27.6,"GPIO22","46", 3303.1496,1415.7480,7.9,27.6,"GPIO27","48",
+      3318.8976,1415.7480,7.9,27.6,"GPIO17","50", 3350.3937,1415.7480,7.9,27.6,"MCLK","54",
+      3366.1417,1415.7480,7.9,27.6,"GPIO3","56", 3381.8898,1415.7480,7.9,27.6,"GPIO2","58",
+      3555.1181,1415.7480,7.9,27.6,"SCL_PWR","80", 3570.8661,1415.7480,7.9,27.6,"SDA_PWR","82",
+      3651.5748,1415.7480,7.9,27.6,"CC1","94", 3667.3228,1415.7480,7.9,27.6,"CC2","96",
+      3683.0709,1415.7480,7.9,27.6,"GND","98"
+    ]]
+  ],
+  tracks: [
+    [2125.9843,1417.3228,2322.8346,1220.4724,3.9,10,""],
+    [2125.9843,1742.1260,2125.9843,1417.3228,3.9,10,""],
+    [2125.9843,3070.8661,2125.9843,2608.2677,3.9,10,""],
+    [2125.9843,3070.8661,2145.6693,3070.8661,3.9,10,""],
+    [2125.9843,3700.7874,2145.6693,3700.7874,3.9,10,""],
+    [2125.9843,7125.9843,2125.9843,3700.7874,3.9,10,""],
+    [2145.6693,1742.1260,2125.9843,1742.1260,3.9,10,""],
+    [2145.6693,2608.2677,2125.9843,2608.2677,3.9,10,""],
+    [2145.6693,2608.2677,2145.6693,1742.1260,3.9,10,""],
+    [2145.6693,3700.7874,2145.6693,3070.8661,3.9,10,""],
+    [2322.8346,1220.4724,5157.4803,1220.4724,3.9,10,""],
+    [2322.8346,7322.8346,2125.9843,7125.9843,3.9,10,""],
+    [2500.0000,7322.8346,2322.8346,7322.8346,3.9,10,""],
+    [2500.0000,7322.8346,2500.0000,6830.7087,3.9,10,""],
+    [2775.5906,6830.7087,2500.0000,6830.7087,3.9,10,""],
+    [2775.5906,6830.7087,2775.5906,7322.8346,3.9,10,""],
+    [2834.6457,7322.8346,2775.5906,7322.8346,3.9,10,""],
+    [3287.4016,3799.2126,3287.4016,6889.7638,3.9,10,""],
+    [3287.4016,6889.7638,5354.3307,6889.7638,3.9,10,""],
+    [3553.1496,7322.8346,2834.6457,7322.8346,3.9,10,""],
+    [3553.1496,7322.8346,3553.1496,7185.0394,3.9,10,""],
+    [3582.6772,3759.8425,3582.6772,3799.2126,3.9,10,""],
+    [3582.6772,3759.8425,3897.6378,3759.8425,3.9,10,""],
+    [3582.6772,3799.2126,3287.4016,3799.2126,3.9,10,""],
+    [3897.6378,3759.8425,3897.6378,3799.2126,3.9,10,""],
+    [3907.4803,7185.0394,3572.8346,7185.0394,3.9,10,""],
+    [3927.1654,7322.8346,3927.1654,7185.0394,3.9,10,""],
+    [5157.4803,1220.4724,5354.3307,1417.3228,3.9,10,""],
+    [5157.4803,7322.8346,3927.1654,7322.8346,3.9,10,""],
+    [5334.6457,2952.7559,5354.3307,2952.7559,3.9,10,""],
+    [5334.6457,3799.2126,3897.6378,3799.2126,3.9,10,""],
+    [5334.6457,3799.2126,5334.6457,2952.7559,3.9,10,""],
+    [5354.3307,1417.3228,5354.3307,2952.7559,3.9,10,""],
+    [5354.3307,6889.7638,5354.3307,7125.9843,3.9,10,""],
+    [5354.3307,7125.9843,5157.4803,7322.8346,3.9,10,""],
+    [2244.0945,3582.6772,5236.2205,3582.6772,5.9,12,""],
+    [2303.1496,1476.3780,2303.1496,2775.5906,5.9,12,""],
+    [2362.2047,1417.3228,2362.2047,7116.1417,5.9,12,""],
+    [2362.2047,1417.3228,5118.1102,1417.3228,5.9,12,""],
+    [2362.2047,7125.9843,5118.1102,7125.9843,5.9,12,""],
+    [3740.1575,7490.1575,3740.1575,856.2992,5.9,12,""],
+    [4645.6693,1368.1102,4645.6693,7135.8268,5.9,12,""],
+    [5118.1102,1427.1654,5118.1102,7125.9843,5.9,12,""],
+    [2933.0709,6188.9764,2933.0709,6190.9449,7.9,1,"SDRV"],
+    [2933.0709,6190.9449,2923.2283,6200.7874,7.9,1,"SDRV"],
+    [2923.2283,6200.7874,2888.7795,6200.7874,7.9,1,"SDRV"],
+    [2888.7795,6200.7874,2888.2874,6202.7559,7.9,1,"SDRV"],
+    [3031.4961,6236.2205,3031.4961,6235.2362,7.9,1,"PROG"],
+    [3031.4961,6235.2362,3006.8898,6259.8425,7.9,1,"PROG"],
+    [3006.8898,6259.8425,2913.3858,6259.8425,7.9,1,"PROG"],
+    [2913.3858,6259.8425,2908.4646,6264.7638,7.9,1,"PROG"],
+    [2908.4646,6264.7638,2888.7795,6264.7638,7.9,1,"PROG"],
+    [2888.7795,6264.7638,2889.7638,6265.7480,7.9,1,"PROG"],
+    [3350.3937,7192.0472,3351.3780,7189.9606,7.9,1,"MIC_DO"],
+    [3351.3780,7189.9606,3351.3780,7066.9291,7.9,1,"MIC_DO"],
+    [3351.3780,7066.9291,3390.7480,7027.5591,7.9,1,"MIC_DO"],
+    [3390.7480,7027.5591,3392.7165,7027.5591,7.9,1,"MIC_DO"],
+    [2674.2126,5866.1417,2672.2441,5866.1417,7.9,1,"LED1-A"],
+    [2672.2441,5866.1417,2716.5354,5910.4331,7.9,1,"LED1-A"],
+    [2716.5354,5910.4331,2716.5354,6033.4646,7.9,1,"LED1-A"],
+    [2716.5354,6033.4646,2718.9764,6031.4961,7.9,1,"LED1-A"],
+    [3110.2362,6172.2441,3110.2362,6171.2598,7.9,1,"BQ_INT"],
+    [3110.2362,6171.2598,3070.8661,6131.8898,7.9,1,"BQ_INT"],
+    [3070.8661,6131.8898,2962.5984,6131.8898,7.9,1,"BQ_INT"],
+    [2962.5984,6131.8898,2928.1496,6166.3386,7.9,1,"BQ_INT"],
+    [2928.1496,6166.3386,2898.6220,6166.3386,7.9,1,"BQ_INT"],
+    [2898.6220,6166.3386,2869.0945,6195.8661,7.9,1,"BQ_INT"],
+    [2869.0945,6195.8661,2869.0945,6250.0000,7.9,1,"BQ_INT"],
+    [2869.0945,6250.0000,2889.7638,6250.0000,7.9,1,"BQ_INT"],
+    [2740.1575,6202.7559,2741.1417,6200.7874,7.9,1,"LED1-K"],
+    [2741.1417,6200.7874,2741.1417,6117.1260,7.9,1,"LED1-K"],
+    [2741.1417,6117.1260,2657.4803,6033.4646,7.9,1,"LED1-K"],
+    [2657.4803,6033.4646,2618.1102,5994.0945,7.9,1,"LED1-K"],
+    [2884.8425,4822.8346,2883.8583,4822.8346,7.9,1,"C63_PAD2"],
+    [2883.8583,4822.8346,2883.8583,4793.3071,7.9,1,"C63_PAD2"],
+    [2883.8583,4793.3071,2785.4331,4694.8819,7.9,1,"C63_PAD2"],
+    [2785.4331,4694.8819,2573.8189,4694.8819,7.9,1,"C63_PAD2"],
+    [2573.8189,4694.8819,2574.8425,4694.6850,7.9,1,"C63_PAD2"],
+    [3602.3622,6956.6929,3545.0000,6955.0000,7.9,1,"U9-OUT+"],
+    [3545.0000,6955.0000,3545.0000,6925.0000,7.9,1,"U9-OUT+"],
+    [3545.0000,6925.0000,3115.0000,6925.0000,7.9,1,"U9-OUT+"],
+    [3115.0000,6925.0000,3115.0000,6765.0000,7.9,1,"U9-OUT+"],
+    [3115.0000,6765.0000,3035.0000,6765.0000,7.9,1,"U9-OUT+"],
+    [3035.0000,6765.0000,3034.7638,6439.1732,7.9,1,"U9-OUT+"],
+    [3097.4409,5216.5354,3040.0000,5215.0000,7.9,1,"Q3-G"],
+    [3040.0000,5215.0000,3040.0000,5180.0000,7.9,1,"Q3-G"],
+    [3040.0000,5180.0000,2955.0000,5180.0000,7.9,1,"Q3-G"],
+    [2955.0000,5180.0000,2955.0000,4930.0000,7.9,1,"Q3-G"],
+    [2955.0000,4930.0000,2970.0000,4930.0000,7.9,1,"Q3-G"],
+    [2970.0000,4930.0000,2970.0000,4790.0000,7.9,1,"Q3-G"],
+    [2970.0000,4790.0000,2960.0000,4790.0000,7.9,1,"Q3-G"],
+    [2960.0000,4790.0000,2960.0000,4685.0000,7.9,1,"Q3-G"],
+    [2960.0000,4685.0000,2790.0000,4685.0000,7.9,1,"Q3-G"],
+    [2735.0000,4680.0000,2735.0000,4615.0000,7.9,1,"Q3-G"],
+    [2720.0000,4615.0000,2720.0000,4315.0000,7.9,1,"Q3-G"],
+    [2685.0000,4315.0000,2685.8268,4286.4173,7.9,1,"Q3-G"],
+    [3789.3701,3489.2091,3775.0000,3490.0000,7.9,1,"NET_J3_8"],
+    [3775.0000,3490.0000,3775.0000,3520.0000,7.9,1,"NET_J3_8"],
+    [3775.0000,3520.0000,2640.0000,3520.0000,7.9,1,"NET_J3_8"],
+    [2640.0000,3520.0000,2637.7953,3461.6142,7.9,1,"NET_J3_8"],
+    [3121.0630,7192.9134,3150.0000,7195.0000,7.9,1,"EN"],
+    [3150.0000,7195.0000,3150.0000,7225.0000,7.9,1,"EN"],
+    [3150.0000,7225.0000,3290.0000,7225.0000,7.9,1,"EN"],
+    [3290.0000,7225.0000,3290.0000,7250.0000,7.9,1,"EN"],
+    [3290.0000,7250.0000,3490.0000,7250.0000,7.9,1,"EN"],
+    [3490.0000,7250.0000,3490.0000,7330.0000,7.9,1,"EN"],
+    [3490.0000,7330.0000,3990.0000,7330.0000,7.9,1,"EN"],
+    [3990.0000,7330.0000,3990.0000,7280.0000,7.9,1,"EN"],
+    [3990.0000,7280.0000,4235.0000,7280.0000,7.9,1,"EN"],
+    [4235.0000,7280.0000,4235.0000,7155.0000,7.9,1,"EN"],
+    [4235.0000,7155.0000,4295.0000,7155.0000,7.9,1,"EN"],
+    [4295.0000,7155.0000,4295.0000,7095.0000,7.9,1,"EN"],
+    [4295.0000,7095.0000,4270.0000,7095.0000,7.9,1,"EN"],
+    [4270.0000,7095.0000,4269.6850,7080.7087,7.9,1,"EN"],
+    [2505.9055,6053.1496,2505.9055,6124.0157,7.9,1,"ILIM_HIZ"],
+    [2505.9055,6124.0157,2541.3386,6124.0157,7.9,1,"REGN"],
+    [2541.3386,6124.0157,2541.3386,6196.8504,7.9,1,"REGN"],
+    [2541.3386,6196.8504,2590.5512,6196.8504,7.9,1,"REGN"],
+    [2607.2835,4547.2441,2607.2835,4350.3937,7.9,1,"GND"],
+    [2607.2835,4350.3937,2550.1969,4350.3937,7.9,1,"VCC"],
+    [2666.3386,4763.7795,2735.7874,4763.7795,7.9,1,"LOWBAT_SNS"],
+    [2735.7874,4763.7795,2735.7874,5080.5118,7.9,1,"LOWBAT_SNS"],
+    [2678.7008,5080.5118,2735.7874,5080.5118,7.9,1,"3V3B"],
+    [2941.9291,4901.5748,2941.9291,5039.3701,7.9,1,"FB"],
+    [2941.9291,5039.3701,2916.9291,5039.3701,7.9,1,"FB"],
+    [2941.9291,4822.8346,2941.9291,4901.5748,7.9,1,"AGND"],
+    [2941.9291,4901.5748,2964.5669,4901.5748,7.9,1,"AGND"],
+    [2851.3780,5974.4094,2851.3780,5919.2913,7.9,1,"SYS"],
+    [2851.3780,5919.2913,2851.3780,5864.1732,7.9,1,"SYS"],
+    [2851.3780,5864.1732,2908.4646,5864.1732,7.9,1,"GND"]
+  ]
+};
+
+function compactToEasyEda(pcb){
+  const shapes = [];
+  for (const c of pcb.comps){
+    const [pkg, x, y, padFlat] = c;
+    let s = `LIB~${x}~${y}~package\`${pkg}\`Name\`${pkg}\`Device\`${pkg}\`Value\`${pkg}\``;
+    for (let i = 0; i + 5 < padFlat.length; i += 6){
+      const px = padFlat[i], py = padFlat[i+1], pw = padFlat[i+2], ph = padFlat[i+3];
+      const net = padFlat[i+4] || '', num = padFlat[i+5] || '';
+      s += `#@$PAD~RECT~${px}~${py}~${pw}~${ph}~1~${net}~${num}~0~~0~gge~0~~N`;
+    }
+    shapes.push(s);
+  }
+  for (const t of pcb.tracks){
+    const [x1, y1, x2, y2, w, layer, net] = t;
+    shapes.push(`TRACK~${w}~${layer}~${net || ''}~~${x1} ${y1} ${x2} ${y2}~gge~0`);
+  }
+  return { BBox: pcb.bbox, shape: shapes };
+}
+
+try {
+  const parsed = parseBoard(compactToEasyEda(PHEONIX_PCB));
+  buildPcbScene(parsed);
+  applyPcbState();
+} catch (err){
+  console.error('PCB parse error:', err);
+  document.getElementById('hud-board').textContent = 'ERROR: ' + err.message;
+}
+
+/* ================================================================
+   7. VISIBILITY + RENDER LOOP
+   ================================================================ */
+const visible = { pcb: false, design: false };
+const dirty = { pcb: true, design: true };
+function markDirty(which){ dirty[which] = true; }
+
+const visObs = new IntersectionObserver((entries) => {
+  for (const e of entries){
+    const key = e.target.dataset.section;
+    visible[key] = e.isIntersecting;
+    if (e.isIntersecting) markDirty(key);
+  }
+}, { rootMargin: '150px' });
+document.getElementById('pcb').dataset.section = 'pcb';
+document.getElementById('design').dataset.section = 'design';
+visObs.observe(document.getElementById('pcb'));
+visObs.observe(document.getElementById('design'));
+
+new ResizeObserver(() => {
+  if (fitRendererToCanvas(pcbRenderer, pcbCam, pcbCanvas)) markDirty('pcb');
+}).observe(pcbCanvas);
+new ResizeObserver(() => {
+  if (fitRendererToCanvas(designRenderer, designCam, designCanvas)) markDirty('design');
+}).observe(designCanvas);
+
+pcbControls.addEventListener('change', () => markDirty('pcb'));
+designControls.addEventListener('change', () => markDirty('design'));
+
+let designSplitOn = false;
+let designSplitAmt = 0;
+let camGoal = null;
+
+let lastTime = 0;
+let pcbAutoAccum = 0;
+let designAutoAccum = 0;
+
+function loop(now){
+  requestAnimationFrame(loop);
+  const dtMs = now - lastTime;
+  const frameMin = 1000 / Q.fps;
+  if (dtMs < frameMin - 2) return;
+  const dt = Math.min(dtMs, 100);
+  lastTime = now;
+
+  const splitTarget = designSplitOn ? 1 : 0;
+  if (Math.abs(splitTarget - designSplitAmt) > 0.001){
+    designSplitAmt += (splitTarget - designSplitAmt) * Math.min(dt / 1000 * 5, 1);
+    applySplit(designPhone, designSplitAmt);
+    markDirty('design');
+  }
+  if (camGoal){
+    designCam.position.lerp(camGoal, Math.min(dt / 1000 * 4, 1));
+    if (designCam.position.distanceToSquared(camGoal) < 0.05) camGoal = null;
+    designControls.update();
+    markDirty('design');
+  }
+  if (visible.pcb){
+    if (pcbControls.autoRotate){
+      pcbAutoAccum += dt;
+      if (pcbAutoAccum > 16){ pcbControls.update(); pcbAutoAccum = 0; markDirty('pcb'); }
+    }
+    if (dirty.pcb){
+      fitRendererToCanvas(pcbRenderer, pcbCam, pcbCanvas);
+      pcbRenderer.render(pcbScene, pcbCam);
+      dirty.pcb = false;
+    }
+  }
+  if (visible.design){
+    if (designControls.autoRotate){
+      designAutoAccum += dt;
+      if (designAutoAccum > 16){ designControls.update(); designAutoAccum = 0; markDirty('design'); }
+    }
+    if (dirty.design){
+      fitRendererToCanvas(designRenderer, designCam, designCanvas);
+      designRenderer.render(designScene, designCam);
+      dirty.design = false;
+    }
+  }
+}
+requestAnimationFrame(loop);
+
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) visible.pcb = visible.design = false;
+});
+
+/* ================================================================
+   8. UI WIRING
+   ================================================================ */
+document.querySelectorAll('[data-goto]').forEach(el => {
+  el.addEventListener('click', () => {
+    document.getElementById(el.dataset.goto)?.scrollIntoView({ behavior:'smooth', block:'start' });
+  });
+});
+const navEl = document.getElementById('nav');
+const navLinks = document.querySelectorAll('.nav-link');
+window.addEventListener('scroll', () => {
+  navEl.classList.toggle('scrolled', scrollY > 60);
+  const y = scrollY + innerHeight * 0.35;
+  let cur = '';
+  for (const id of ['pcb','design','specs']){
+    const el = document.getElementById(id);
+    if (el && el.offsetTop <= y) cur = id;
+  }
+  navLinks.forEach(l => l.classList.toggle('active', l.dataset.goto === cur));
+}, { passive: true });
+
+document.querySelectorAll('[data-mode]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-mode]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    pcbState.mode = btn.dataset.mode;
+    pcbState.showComponents = pcbState.mode === 'component';
+    document.getElementById('tg-components').disabled = pcbState.mode !== 'component';
+    applyPcbState();
+  });
+});
+document.getElementById('tg-components').addEventListener('click', () => {
+  pcbState.showComponents = !pcbState.showComponents;
+  document.getElementById('tg-components').classList.toggle('on', pcbState.showComponents);
+  applyPcbState();
+});
+document.getElementById('tg-top').addEventListener('click', () => {
+  pcbState.showTop = !pcbState.showTop;
+  document.getElementById('tg-top').classList.toggle('on', pcbState.showTop);
+  applyPcbState();
+});
+document.getElementById('tg-bottom').addEventListener('click', () => {
+  pcbState.showBottom = !pcbState.showBottom;
+  document.getElementById('tg-bottom').classList.toggle('on', pcbState.showBottom);
+  applyPcbState();
+});
+document.getElementById('btn-reveal').addEventListener('click', () => {
+  pcbState.revealed = true;
+  pcbState.mode = 'copper';
+  pcbState.showComponents = false;
+  pcbState.showTop = true;
+  pcbState.showBottom = true;
+  document.querySelectorAll('[data-mode]').forEach(b =>
+    b.classList.toggle('active', b.dataset.mode === 'copper'));
+  document.getElementById('tg-components').classList.remove('on');
+  document.getElementById('tg-components').disabled = true;
+  document.getElementById('tg-top').classList.add('on');
+  document.getElementById('tg-bottom').classList.add('on');
+  pcbStage.classList.add('revealed');
+  pcbControls.autoRotate = false;
+  applyPcbState();
+});
+document.getElementById('btn-reset').addEventListener('click', () => {
+  pcbState = { mode:'component', showComponents:true, showTop:true, showBottom:false, revealed:false };
+  document.querySelectorAll('[data-mode]').forEach(b =>
+    b.classList.toggle('active', b.dataset.mode === 'component'));
+  document.getElementById('tg-components').classList.add('on');
+  document.getElementById('tg-components').disabled = false;
+  document.getElementById('tg-top').classList.add('on');
+  document.getElementById('tg-bottom').classList.remove('on');
+  pcbStage.classList.remove('revealed');
+  pcbControls.autoRotate = Q.rotate;
+  pcbControls.reset();
+  applyPcbState();
+});
+document.getElementById('btn-fs').addEventListener('click', async () => {
+  try {
+    if (!document.fullscreenElement) await pcbStage.requestFullscreen();
+    else await document.exitFullscreen();
+  } catch {}
+});
+document.addEventListener('fullscreenchange', () => {
+  document.getElementById('btn-fs').textContent =
+    document.fullscreenElement ? 'EXIT FULLSCREEN' : 'FULLSCREEN';
+});
+
+const LAYER_DEFS = [
+  { key:'glass',   label:'Front Glass',      color:'#88aaff' },
+  { key:'display', label:'AMOLED Display',   color:'#7eff9c' },
+  { key:'chassis', label:'Chassis',          color:'#2b2e35' },
+  { key:'vapor',   label:'Vapor Chamber',    color:'#c9772e' },
+  { key:'pcb',     label:'Main PCB',         color:'#1a7a3a' },
+  { key:'battery', label:'Battery',          color:'#3a3a3a' },
+  { key:'haptic',  label:'Haptic Motor',     color:'#8a8a92' },
+  { key:'speaker', label:'Speaker Chamber',  color:'#5a5a62' },
+  { key:'coil',    label:'Wireless Coil',    color:'#c9a557' },
+  { key:'camera',  label:'Camera Module',    color:'#4a4a52' },
+  { key:'back',    label:'Rear Panel',       color:'#08090c' },
+  { key:'glyph',   label:'Glyph Strip',      color:'#7eff9c' }
+];
+
+const splitBtn   = document.getElementById('btn-split');
+const splitLabel = document.getElementById('split-label');
+const layerLegend = document.getElementById('layer-legend');
+
+layerLegend.innerHTML =
+  `<div class="lg-title">LAYERS · 12</div>` +
+  LAYER_DEFS.map(d =>
+    `<div class="item" data-layer="${d.key}">
+       <span class="dot" style="background:${d.color}"></span><b>${d.label}</b>
+     </div>`).join('') +
+  `<div class="hint">HOVER TO ISOLATE · CLICK TO PIN</div>`;
+
+let soloLayer = null;
+let pinnedLayer = null;
+
+function applyLayerVisibility(){
+  const L = designPhone.userData.layers;
+  for (const k of Object.keys(L)){
+    const g = L[k];
+    if (!g) continue;
+    g.visible = !soloLayer || k === soloLayer;
+  }
+  markDirty('design');
+}
+
+layerLegend.querySelectorAll('.item').forEach(el => {
+  const key = el.dataset.layer;
+  el.addEventListener('mouseenter', () => {
+    if (!designSplitOn) return;
+    soloLayer = key;
+    applyLayerVisibility();
+  });
+  el.addEventListener('mouseleave', () => {
+    if (!designSplitOn) return;
+    soloLayer = pinnedLayer;
+    applyLayerVisibility();
+  });
+  el.addEventListener('click', () => {
+    if (!designSplitOn) return;
+    pinnedLayer = (pinnedLayer === key) ? null : key;
+    soloLayer = pinnedLayer;
+    layerLegend.querySelectorAll('.item').forEach(x =>
+      x.classList.toggle('solo', x.dataset.layer === pinnedLayer));
+    applyLayerVisibility();
+  });
+});
+
+splitBtn.addEventListener('click', () => {
+  designSplitOn = !designSplitOn;
+  splitBtn.classList.toggle('on', designSplitOn);
+  splitLabel.textContent = designSplitOn ? 'COLLAPSE · EXTERNAL VIEW' : 'SPLIT VIEW · INTERNALS';
+  designStage.classList.toggle('split', designSplitOn);
+  layerLegend.classList.toggle('show', designSplitOn);
+  designControls.autoRotate = designSplitOn ? false : Q.rotate;
+
+  if (designSplitOn){
+    const dir = designCam.position.clone().normalize();
+    camGoal = dir.multiplyScalar(40);
+  } else {
+    soloLayer = null;
+    pinnedLayer = null;
+    layerLegend.querySelectorAll('.item').forEach(x => x.classList.remove('solo'));
+    applyLayerVisibility();
+    const dir = designCam.position.clone().normalize();
+    camGoal = dir.multiplyScalar(32);
+  }
+  markDirty('design');
+});
+
+const finishesEl = document.getElementById('finishes');
+Object.entries(FINISHES).forEach(([key, f]) => {
+  const b = document.createElement('button');
+  b.className = 'finish' + (key === 'obsidian' ? ' active' : '');
+  const bodyHex = f.body.toString(16).padStart(6, '0');
+  const railHex = f.rail.toString(16).padStart(6, '0');
+  b.innerHTML =
+    `<span class="sw2" style="background:linear-gradient(135deg,#${bodyHex},#${railHex})"></span>` +
+    `<span class="fl">${f.label}</span>`;
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.finish').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    applyFinish(designPhone, key);
+    markDirty('design');
+  });
+  finishesEl.appendChild(b);
+});
+
+const VIEW_POS = {
+  'three-quarter': new THREE.Vector3(19, 8, 28),
+  front: new THREE.Vector3(0, 0, 30),
+  back: new THREE.Vector3(0, 0, -30),
+  side: new THREE.Vector3(30, 0, 0)
+};
+document.querySelectorAll('#views button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#views button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    camGoal = null;
+    designCam.position.copy(VIEW_POS[btn.dataset.view]);
+    designControls.target.set(0, 0, 0);
+    designControls.autoRotate = false;
+    designControls.update();
+    markDirty('design');
+  });
+});
+
+document.querySelectorAll('#lighting button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#lighting button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    setLighting(btn.dataset.light);
+    markDirty('design');
+  });
+});
+
+document.getElementById('qcycle').addEventListener('click', () => {
+  const order = ['high', 'medium', 'low', 'minimal'];
+  const i = order.indexOf(currentTier);
+  const next = order[(i + 1) % order.length];
+  localStorage.setItem('pheonixTier', next);
+  location.reload();
+});
+{
+  const saved = localStorage.getItem('pheonixTier');
+  if (saved && saved !== currentTier && TIERS[saved]){
+    currentTier = saved;
+    Q = TIERS[currentTier];
+    document.getElementById('qtier').textContent = tierNames[currentTier];
+    location.reload();
+  }
+}
+
+/* ================================================================
+   10. SPECS
+   ================================================================ */
+const TICKER = [
+  ['120 Hz','ADAPTIVE AMOLED'], ['65 W','HYPERCHARGE'],
+  ['5500 mAh','SILICON-CARBON'], ['50 MP','OIS MAIN'],
+  ['IR BLASTER','UNIVERSAL REMOTE'], ['FM RADIO','NO HEADPHONES NEEDED'],
+  ['12 GB','LPDDR5X CLASS'], ['VAPOR','CHAMBER COOLING'],
+  ['960 Hz','TOUCH SAMPLING'], ['4 YRS','OS UPGRADES'],
+  ['NavIC','INDIA GPS'], ['5G','DUAL SIM']
+];
+{
+  const track = document.getElementById('ticker-track');
+  const make = () => TICKER.map(([a, b]) =>
+    `<span><b>${a}</b> · ${b}</span><span class="sep">◆</span>`).join('');
+  track.innerHTML = make() + make();
+}
+
+const HIGHLIGHTS = [
+  { n:120, unit:'Hz', label:'ADAPTIVE AMOLED',
+    desc:'1.5K class · 2400 nits peak · LTPO 1–120 Hz' },
+  { n:65,  unit:'W',  label:'HYPERCHARGE',
+    desc:'0–50 % in ~15 min · 5500 mAh silicon-carbon cell' },
+  { n:50,  unit:'MP', label:'OIS MAIN CAMERA',
+    desc:'4K60 video · AI night · vlog stabilisation' },
+  { n:960, unit:'Hz', label:'TOUCH SAMPLING',
+    desc:'Esports-grade latency for BGMI / COD Mobile' }
+];
+{
+  const host = document.getElementById('highlights');
+  HIGHLIGHTS.forEach(h => {
+    const el = document.createElement('div');
+    el.className = 'hl-card';
+    el.innerHTML =
+      `<div class="n"><span data-count="${h.n}">0</span><i>${h.unit}</i></div>` +
+      `<div class="t">${h.label}</div>` +
+      `<div class="d">${h.desc}</div>`;
+    host.appendChild(el);
+  });
+  const counterObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      const span = e.target.querySelector('[data-count]');
+      if (!span || span.dataset.done) return;
+      span.dataset.done = '1';
+      const target = parseFloat(span.dataset.count);
+      const t0 = performance.now();
+      const dur = 1300;
+      const step = (t) => {
+        const p = Math.min((t - t0) / dur, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        span.textContent = Math.round(target * eased);
+        if (p < 1) requestAnimationFrame(step);
+        else span.textContent = target;
+      };
+      requestAnimationFrame(step);
+      counterObs.unobserve(e.target);
+    });
+  }, { threshold: 0.35 });
+  host.querySelectorAll('.hl-card').forEach(c => counterObs.observe(c));
+}
+
+const SPOTLIGHT = [
+  { tag:'IR BLASTER',
+    title:'YOUR WHOLE HOME, ONE PHONE',
+    desc:'A built-in <b>IR blaster</b> turns PHEONIX into a universal remote for TVs, ACs, set-top boxes and fans. Learns existing remotes, stores macros and works offline — no internet needed.' },
+  { tag:'GAMING',
+    title:'PULSE GAMING ENGINE',
+    desc:'A 120 Hz LTPO panel driven at <b>960 Hz touch sampling</b>, paired with a <b>vapour-chamber</b> cooling stack and a Game Space overlay that locks clocks, silences calls and streams stats to the Glyph strip.' },
+  { tag:'PAYMENTS',
+    title:'TAP. PAY. GONE.',
+    desc:'Full <b>NFC</b> with UPI Lite and card tokenisation — pay at any terminal in under half a second. Works with the screen off, straight from the lock button.' },
+  { tag:'ENTERTAINMENT',
+    title:'FM RADIO, BACK ON FLAGSHIP',
+    desc:'A real <b>FM radio</b> for offline music, cricket commentary and metro commutes. No data, no headphones required — because sometimes the best music is free.' },
+  { tag:'CREATOR',
+    title:'CAMPUS & CREATOR MODE',
+    desc:'On-device <b>AI lecture notes</b>, dual-mic noise-separated recording, and <b>4K60 with active stabilisation</b> for reels — plus a one-tap vlog preset that colour-matches every clip.' },
+  { tag:'INDIA-FIRST',
+    title:'NAVIC + 11 LANGUAGES',
+    desc:'<b>NavIC</b> satellite support, on-device <b>voice assistant in 11 Indian languages</b>, native dual-apps for WhatsApp and Instagram, and call recording that respects local compliance.' }
+];
+{
+  const stack = document.getElementById('spot-stack');
+  const dots  = document.getElementById('spot-dots');
+  const meter = document.getElementById('spot-meter');
+
+  SPOTLIGHT.forEach((s, i) => {
+    const item = document.createElement('div');
+    item.className = 'spot-item' + (i === 0 ? ' on' : '');
+    item.innerHTML =
+      `<div class="spot-tag">${s.tag}</div>` +
+      `<h3>${s.title}</h3>` +
+      `<p>${s.desc}</p>`;
+    stack.appendChild(item);
+
+    const d = document.createElement('button');
+    d.className = i === 0 ? 'on' : '';
+    d.setAttribute('aria-label', s.title);
+    d.addEventListener('click', () => go(i));
+    dots.appendChild(d);
+  });
+
+  const items = stack.querySelectorAll('.spot-item');
+  const dotEls = dots.querySelectorAll('button');
+  let idx = 0, timer = null;
+
+  function go(next){
+    idx = (next + items.length) % items.length;
+    items.forEach((el, i) => el.classList.toggle('on', i === idx));
+    dotEls.forEach((el, i) => el.classList.toggle('on', i === idx));
+    meter.style.animation = 'none';
+    void meter.offsetWidth;
+    meter.style.animation = 'meter 5s linear infinite';
+  }
+  function start(){ stop(); timer = setInterval(() => go(idx + 1), 5000); }
+  function stop(){ if (timer) { clearInterval(timer); timer = null; } }
+
+  start();
+  const spotEl = document.querySelector('.spot');
+  spotEl.addEventListener('mouseenter', stop);
+  spotEl.addEventListener('mouseleave', start);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stop(); else start();
+  });
+}
+
+const SPECS = [
+  { label:'PRODUCT', items:[
+    ['Name','BR-HAX PHEONIX'],
+    ['Design language','Obsidian Monolith'],
+    ['Target price','₹29,999','inclusive concept target'],
+    ['Market','India · global concept'],
+    ['Launch window','Concept stage','not scheduled']
+  ]},
+  { label:'DISPLAY', items:[
+    ['Size','6.67-inch'],
+    ['Panel','AMOLED · LTPO 1–120 Hz'],
+    ['Resolution','1.5K class (446 ppi)'],
+    ['Peak brightness','2,400 nits','HDR goal'],
+    ['Protection','Gorilla Glass Victus class'],
+    ['Colour','10-bit · 100 % DCI-P3']
+  ]},
+  { label:'PERFORMANCE', items:[
+    ['Chipset class','Upper-midrange 5G SoC','target'],
+    ['Process','4 nm class','supplier dependent'],
+    ['RAM','8 GB base · 12 GB premium','LPDDR5X class'],
+    ['Storage','256 GB base · 512 GB premium','UFS 3.1 class'],
+    ['Cooling','Vapour chamber + graphite','sustained perf goal']
+  ]},
+  { label:'GAMING', items:[
+    ['Refresh','120 Hz adaptive'],
+    ['Touch sampling','960 Hz','esports latency'],
+    ['Game Space','Per-title clock + network lock'],
+    ['Triggers','Dual shoulder zones','touch mapping'],
+    ['Haptics','X-axis linear motor','in-game effects'],
+    ['Thermals','Sustained 90 % after 30 min','stretch target']
+  ]},
+  { label:'CAMERAS', items:[
+    ['Main','50 MP · OIS · f/1.7','target'],
+    ['Ultrawide','12 MP · 120° field','target'],
+    ['Tele / macro','8 MP 2× lossless crop','target'],
+    ['Front','32 MP punch-hole'],
+    ['Video','4K60 · 4K30 EIS + OIS','subject to silicon'],
+    ['AI','Night engine · Astro mode','on-device only']
+  ]},
+  { label:'BATTERY & CHARGING', items:[
+    ['Capacity','5,500 mAh','silicon-carbon target'],
+    ['Wired','65 W HyperCharge'],
+    ['Wireless','30 W Qi2 class','target'],
+    ['Reverse','10 W wired reverse','concept'],
+    ['Health','80 % after 1,000 cycles','cell goal']
+  ]},
+  { label:'AUDIO', items:[
+    ['Speakers','Dual stereo · Hi-Res certified'],
+    ['Codecs','LDAC · LHDC · aptX Adaptive'],
+    ['Mics','3-mic array · AI noise separation'],
+    ['FM Radio','Yes — no headphones required','India-first'],
+    ['Jack','None — USB-C audio']
+  ]},
+  { label:'INDIA-FIRST', items:[
+    ['IR Blaster','Universal remote for TV · AC · STB','headline feature'],
+    ['NavIC','India GPS constellation','target'],
+    ['Voice','Offline assistant in 11 Indian languages'],
+    ['Dual Apps','WhatsApp · Instagram · more'],
+    ['Call Recording','Native · compliance aware'],
+    ['UPI Lite','Tap-to-pay without unlock']
+  ]},
+  { label:'SOFTWARE & AI', items:[
+    ['Base','Clean Android-based concept'],
+    ['OS upgrades','4 years','target'],
+    ['Security patches','5 years','target'],
+    ['Assistant','PHEONIX AI · on-device NPU'],
+    ['Languages','English + 11 Indian languages','offline'],
+    ['Preloads','Minimal · fully uninstallable','goal']
+  ]},
+  { label:'SECURITY', items:[
+    ['Unlock','In-display optical fingerprint'],
+    ['Face','2D face unlock'],
+    ['Payments','UPI + tokenised NFC cards'],
+    ['Private space','Isolated app vault']
+  ]},
+  { label:'CONNECTIVITY', items:[
+    ['Cellular','5G · dual SIM · dual standby'],
+    ['Bands','n1/n3/n5/n8/n28/n40/n78','India-first'],
+    ['Wi-Fi','Wi-Fi 6 · dual band'],
+    ['Bluetooth','5.3 · LE Audio'],
+    ['NFC','Yes — payments + transit'],
+    ['Wired','USB-C 2.0 · DisplayPort alt','concept']
+  ]},
+  { label:'BUILD & SUSTAINABILITY', items:[
+    ['Frame','Recycled aluminium rails'],
+    ['Front','Glass Victus class'],
+    ['Back','Matte obsidian composite · frost texture'],
+    ['Rating','IP68 dust + water','target'],
+    ['Packaging','Plastic-free · 100 % recycled fibre'],
+    ['Take-back','Device trade-in programme','goal']
+  ]}
+];
+const specGrid = document.getElementById('spec-grid');
+for (const block of SPECS){
+  const card = document.createElement('div');
+  card.className = 'spec-card';
+  const items = block.items.map(([k, v, n]) =>
+    `<li><span class="k">${k}</span><span class="v">${v}${n ? `<em class="n">${n}</em>` : ''}</span></li>`
+  ).join('');
+  card.innerHTML = `<div class="lbl">${block.label}</div><ul>${items}</ul>`;
+  specGrid.appendChild(card);
+}
+const specObs = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting){
+      setTimeout(() => e.target.classList.add('in'), i * 45);
+      specObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.15 });
+document.querySelectorAll('.spec-card').forEach(c => specObs.observe(c));
+
+const SOFT = [
+  { name:'PHEONIX FLOW', text:'Smooth minimalist interface with contextual widgets that adapt to time, place and battery.' },
+  { name:'PULSE GAMING PANEL', text:'Gaming dashboard: live FPS, thermal graph, network jitter and one-tap do-not-disturb.' },
+  { name:'REMOTE HUB', text:'Learn any IR remote in seconds. Group TV + AC + set-top into one-tap scenes.' },
+  { name:'CAMPUS MODE', text:'Study timer, AI lecture transcription and quick access to notes from the lock screen.' },
+  { name:'CONTROL CENTER', text:'One unified surface for Glyph patterns, charging limits, cooling profiles and privacy.' }
+];
+const softGrid = document.getElementById('soft-grid');
+for (const f of SOFT){
+  const c = document.createElement('div');
+  c.className = 'soft-card';
+  c.innerHTML = `<div class="tag">CONCEPT</div><h4>${f.name}</h4><p>${f.text}</p>`;
+  softGrid.appendChild(c);
+}
+</script>
+</body>
+</html>
